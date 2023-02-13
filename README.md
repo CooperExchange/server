@@ -1,13 +1,11 @@
 # Back-end for CooperExchange
 
 Pending Tasks
-- [ ] Use Java to create an account
 - [ ] Use Java to update username, email, password, first name, last name
 - [ ] Refactor code using `DataAccessObject` and `DataTransferObject`
- 
 
 Implemented
-
+- [x] Use Java to create an account
 - [x] Use Java to connect with the local database and retrieve information based on `user_id`
 
 ## How to use
