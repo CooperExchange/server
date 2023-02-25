@@ -22,8 +22,9 @@ public class AccountDAO extends DataAccessObject {
     //SQL queries
     private static final String GET_ONE_BY_ID = "SELECT user_id, first_name, last_name, username, pass_word, email, num_of_trades, total_deposit, total_withdrawn, current_bal, net_profit FROM accounts WHERE user_id=?";
     private static final String GET_ONE_BY_USERNAME = "SELECT user_id, first_name, last_name, username, pass_word, email, num_of_trades, total_deposit, total_withdrawn, current_bal, net_profit FROM accounts WHERE username=?";
+    private static final String INSERT_ACCOUNT = "INSERT INTO accounts (first_name, last_name, username, pass_word, email) VALUES (?, ?, ?, ?, ?)";
 
-    //Methods to implement SQL queries and return desired information as attributes of an Account object
+    //Methods to execute SQL queries and return desired information as attributes of an Account object
     public Account findById(long id){
         Account account = new Account();
         System.out.println(GET_ONE_BY_ID);
@@ -83,4 +84,6 @@ public class AccountDAO extends DataAccessObject {
         }
         return account;
     }
+
+
 }
