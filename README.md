@@ -5,46 +5,9 @@ $ docker run --rm --name lil-postgres -e POSTGRES_PASSWORD=password -d -v $HOME/
 $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 ```
 
-To execute SQL commands in the docker container
-```agsl
-$ docker exec -it lil-postgres bash // go into the docker container using container name
-$ docker exec -it 46c0b162a40b bash // or go into the docker container using container id
-$ psql -h localhost -U postgres // run SQL comands
 ```
-
-```agsl
-$ CREATE DATABASE cooper_exchange;
-$ GRANT ALL PRIVILEGES ON DATABASE cooper_exchange TO postgres;
-$ \c cooper_exchange
-```
-
-```sql
-CREATE TABLE accounts (
-    user_id     SERIAL PRIMARY KEY,
-    first_name varchar(50) NOT NULL,
-    last_name varchar(50) NOT NULL,
-    username varchar(50) NOT NULL UNIQUE,
-    pass_word varchar(50) NOT NULL,
-    email varchar(50) NOT NULL UNIQUE,
-    total_deposit NUMERIC(1000,2) DEFAULT 0.00,
-    total_withdrawal NUMERIC(1000,2) DEFAULT 0.00,
-    current_balance numeric GENERATED ALWAYS AS (total_deposit -  total_withdrawal) STORED
-);
-
-
-CREATE TABLE trades (
-    trade_id     SERIAL PRIMARY KEY,
-    trade_type   varchar(50)      NOT NULL,
-    trade_date   DATE DEFAULT CURRENT_DATE,
-    user_id      bigint           NOT NULL,
-    asset_symbol varchar(50)      NOT NULL,
-    asset_name   varchar(50)      NOT NULL,
-    asset_price  NUMERIC(1000, 2) NOT NULL,
-    asset_count  NUMERIC(1000, 2) NOT NULL,
-    total_price  numeric GENERATED ALWAYS AS (asset_price * asset_count) STORED
-);
-
-```
+## Database
+To initialize Docker database/tables, visit https://github.com/CooperExchange/database
 
 ## API Endpoint Examples for Demo
 
