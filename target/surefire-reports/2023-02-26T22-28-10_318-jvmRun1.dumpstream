@@ -1,0 +1,77 @@
+# Created at 2023-02-26T22:28:12.013
+TestSet has not finished before stream error has appeared >> initializing exit by non-null configuration: null
+java.io.EOFException
+	at java.base/java.io.DataInputStream.readInt(DataInputStream.java:398)
+	at org.apache.maven.surefire.booter.MasterProcessCommand.decode(MasterProcessCommand.java:115)
+	at org.apache.maven.surefire.booter.CommandReader$CommandRunnable.run(CommandReader.java:391)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+
+
+# Created at 2023-02-26T22:28:12.353
+Unexpected IOException with stream: Account Controller object has been initialized!
+
+
+# Created at 2023-02-26T22:28:12.354
+Unexpected IOException with stream: AccountDAO object has been initialized with successful DB connection
+
+
+# Created at 2023-02-26T22:28:12.637
+Unexpected IOException with stream: The database has been successfully connected
+
+
+# Created at 2023-02-26T22:28:12.637
+Unexpected IOException with stream: Database SQL Executor Function Called
+
+
+# Created at 2023-02-26T22:28:12.640
+Unexpected IOException with stream: Account Setting Controller object has been initialized!
+
+
+# Created at 2023-02-26T22:28:12.640
+Unexpected IOException with stream: AccountSettingDAO object has been initialized with successful DB connection
+
+
+# Created at 2023-02-26T22:28:12.707
+Unexpected IOException with stream: The database has been successfully connected
+
+
+# Created at 2023-02-26T22:28:12.707
+Unexpected IOException with stream: Database SQL Executor Function Called
+
+
+# Created at 2023-02-26T22:28:12.710
+Unexpected IOException with stream: LoginForm Controller object has been initialized!
+
+
+# Created at 2023-02-26T22:28:12.711
+Unexpected IOException with stream: LoginFormDAO object has been initialized with successful DB connection
+
+
+# Created at 2023-02-26T22:28:12.787
+Unexpected IOException with stream: The database has been successfully connected
+
+
+# Created at 2023-02-26T22:28:12.787
+Unexpected IOException with stream: Database SQL Executor Function Called
+
+
+# Created at 2023-02-26T22:28:12.788
+Unexpected IOException with stream: Register Controller object has been initialized!
+
+
+# Created at 2023-02-26T22:28:12.789
+Unexpected IOException with stream: AccontDAO object has been initialized with successful DB connection
+
+
+# Created at 2023-02-26T22:28:12.851
+Unexpected IOException with stream: The database has been successfully connected
+
+
+# Created at 2023-02-26T22:28:12.852
+Unexpected IOException with stream: Database SQL Executor Function Called
+
+
+# Created at 2023-02-26T22:28:13.371
+Unexpected IOException with stream: 2023-02-26T22:28:13.371-05:00  INFO 32063 --- [           main] com.cooperps.rps.ApplicationTests        : Started ApplicationTests in 2.23 seconds (process running for 2.953)
+
+
