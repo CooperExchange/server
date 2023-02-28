@@ -32,12 +32,15 @@ public class AccountDAO {
 
     // To-do: Implement error handling if there is no user.
     public String addBalanceById(String userId, Double amount) {
-        String SQL = "update accounts set total_deposit = total_deposit + ? where user_id = ?;";
+        String SQL = "update accounts set total_deposit = total_deposit + ? where user_id = ?;" +
+                "update accounts set current_bal = current_bal + ? where user_id = ?;";
         int userIdInt = Integer.parseInt(userId);
 
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setDouble(1, amount);
             statement.setInt(2, userIdInt);
+            statement.setDouble(3, amount);
+            statement.setInt(4, userIdInt);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -48,11 +51,14 @@ public class AccountDAO {
 
     // To-do: Prevent withdrawing if total_deposit > total_withdrawal
     public String withdrawBalanceById(String userId, Double amount) {
-        String SQL = "update accounts set total_withdrawal = total_withdrawal + ? where user_id = ?;";
+        String SQL = "update accounts set total_withdrawal = total_withdrawal + ? where user_id = ?;" +
+                "update accounts set current_bal = current_bal - ? where user_id = ?;";
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setDouble(1, amount);
             statement.setInt(2, userIdInt);
+            statement.setDouble(3, amount);
+            statement.setInt(4, userIdInt);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -93,20 +99,38 @@ public class AccountDAO {
         // Convert String to numbers
         int userIdInt = Integer.parseInt(userId);
         Double assetPriceDouble = Double.parseDouble(assetPrice);
-        Double assetCountDoucle = Double.parseDouble(trade.assetCount);
+        Double assetCountDouble = Double.parseDouble(trade.assetCount);
 
-        String SQL = "INSERT INTO trades" +
-                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-                " (?, ?, ?, ?, ?, ?);";
 
+        if(trade.buy == true) {
+            String SQL = "INSERT INTO trade_history" +
+                    "  (user_id, asset_id, asset_name, unit_price, shares, buy, date_purchase) VALUES " +
+                    " (?, ?, ?, ?, ?, ?, ?);" +
+                    "UPDATE portfolio SET shares = shares + ? WHERE asset_id = ? AND user_id = ?;" +
+                    "UPDATE accounts SET current_bal = current_bal - (?*?) WHERE user_id = ?;";
+        }
+        if(trade.buy == false){
+            String SQL = "INSERT INTO trade_history" +
+                    "  (user_id, asset_id, asset_name, unit_price, shares, buy, date_purchase) VALUES " +
+                    " (?, ?, ?, ?, ?, ?, ?);" +
+                    "UPDATE portfolio SET shares = shares - ? WHERE asset_id = ? AND user_id = ?;"+
+                    "UPDATE accounts SET current_bal = current_bal + (?*?) WHERE user_id = ?;";
+        }
         try {
             PreparedStatement statement = this.connection.prepareStatement(SQL);
-            statement.setString(1, trade.tradeType);
-            statement.setInt(2, userIdInt);
-            statement.setString(3, assetSymbol);
-            statement.setString(4, assetName);
-            statement.setDouble(5, assetPriceDouble);
-            statement.setDouble(6, assetCountDoucle);
+            statement.setInt(1, userIdInt);
+            statement.setString(2, assetSymbol);
+            statement.setString(3, assetName);
+            statement.setDouble(4, assetPriceDouble);
+            statement.setDouble(5, assetCountDouble);
+            statement.setString(6, trade.buy);
+            //statement.setString(7, DATEPURCHASED); NEED DATE - EVAN
+            statement.setDouble(7, assetCountDouble);
+            statement.setString(8, assetSymbol);
+            statement.setInt(9, userIdInt);
+            statement.setDouble(10, assetCountDouble);
+            statement.setDouble(11, assetPriceDouble);
+            statement.setInt(12, userIdInt);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
