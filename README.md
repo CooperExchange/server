@@ -12,10 +12,12 @@ $ docker exec -it 46c0b162a40b bash // or go into the docker container using con
 $ psql -h localhost -U postgres // run SQL comands
 ```
 
-
 ```agsl
-\c cooper_exchange
+$ CREATE DATABASE cooper_exchange;
+$ GRANT ALL PRIVILEGES ON DATABASE cooper_exchange TO postgres;
+$ \c cooper_exchange
 ```
+
 ```sql
 CREATE TABLE accounts (
     user_id     SERIAL PRIMARY KEY,
@@ -44,7 +46,6 @@ CREATE TABLE trades (
 
 ```
 
-
 ## API Endpoint Examples for Demo
 
 ### Registration
@@ -55,7 +56,7 @@ CREATE TABLE trades (
 {
 	"email": "demo@gmail.com",
 	"username" : "demouser",
-    "firstName": "Demo",
+	"firstName": "Demo",
 	"lastName" : "Lee",
 	"password" : "demo123"
 }
@@ -108,7 +109,7 @@ CREATE TABLE trades (
 {
 	"email": "sangjoon.lee@cooper.edu",
 	"username" : "sangjoon.lee",
-    "firstName": "Sangoon (Bob)",
+	"firstName": "Sangoon (Bob)",
 	"lastName" : "Lee",
 	"password" : "sangjoon123"
 }
@@ -136,7 +137,6 @@ CREATE TABLE trades (
 $ docker compose build
 $ docker compose up
 ```
-
 
 ## API Tools
 - https://reqbin.com/ for REST API testing
