@@ -17,31 +17,74 @@ $ psql -h localhost -U postgres // run SQL comands
 \c cooper_exchange
 ```
 ```sql
+CREATE SEQUENCE account_seq start with 1; 
 CREATE TABLE accounts (
-    user_id     SERIAL PRIMARY KEY,
+    user_id bigint NOT NULL DEFAULT nextval('account_seq'),
     first_name varchar(50) NOT NULL,
     last_name varchar(50) NOT NULL,
+    ssn int NOT NULL UNIQUE,
     username varchar(50) NOT NULL UNIQUE,
     pass_word varchar(50) NOT NULL,
     email varchar(50) NOT NULL UNIQUE,
+    num_of_trades bigint DEFAULT 0,
     total_deposit NUMERIC(1000,2) DEFAULT 0.00,
-    total_withdrawal NUMERIC(1000,2) DEFAULT 0.00,
-    current_balance numeric GENERATED ALWAYS AS (total_deposit -  total_withdrawal) STORED
+    total_withdrawn NUMERIC(1000,2) DEFAULT 0.00,
+    current_bal NUMERIC(1000,2) DEFAULT 0.00,
+    net_profit NUMERIC(1000,2) DEFAULT 0.00,
+    PRIMARY KEY (user_id),
+    CHECK (net_profit = current_bal + total_withdrawn - total_deposit)
 );
 
 
-CREATE TABLE trades (
-    trade_id     SERIAL PRIMARY KEY,
-    trade_type   varchar(50)      NOT NULL,
-    trade_date   DATE DEFAULT CURRENT_DATE,
-    user_id      bigint           NOT NULL,
-    asset_symbol varchar(50)      NOT NULL,
-    asset_name   varchar(50)      NOT NULL,
-    asset_price  NUMERIC(1000, 2) NOT NULL,
-    asset_count  NUMERIC(1000, 2) NOT NULL,
-    total_price  numeric GENERATED ALWAYS AS (asset_price * asset_count) STORED
+CREATE SEQUENCE trade_seq start with 1;
+CREATE TABLE trade_history (
+    trade_id bigint NOT NULL DEFAULT nextval('trade_seq'),
+    user_id bigint NOT NULL,
+    asset_id bigint NOT NULL,
+    asset_name varchar(15) NOT NULL,
+    unit_price bigint NOT NULL,
+    shares bigint NOT NULL,
+    buy boolean NOT NULL,
+    date_purchase date NOT NULL,
+    PRIMARY KEY (trade_id),
+    FOREIGN KEY (user_id) REFERENCES accounts(user_id),
+    FOREIGN KEY (asset_id) REFERENCES assets(asset_id),
+    FOREIGN KEY (asset_name) REFERENCES assets(asset_name)
 );
 
+CREATE SEQUENCE portfolio_seq start with 1;
+CREATE TABLE portfolio (
+    portfolio_id bigint NOT NULL DEFAULT nextval('portfolio_seq'),
+    asset_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    asset_name varchar(15) NOT NULL,
+    shares bigint NOT NULL,
+    PRIMARY KEY (portfolio_id),
+    FOREIGN KEY (user_id) REFERENCES accounts(user_id),
+    FOREIGN KEY (asset_id) REFERENCES assets(asset_id),
+    FOREIGN KEY (asset_name) REFERENCES assets(asset_name)  
+);
+
+CREATE SEQUENCE portfolio_history_seq start with 1;
+CREATE TABLE portfolio_history (
+    portfolio_history_id bigint NOT NULL DEFAULT nextval('portfolio_history_seq'),
+    user_id bigint NOT NULL,
+    current_bal NUMERIC(1000,2) NOT NULL,
+    date_balance date NOT NULL,
+    PRIMARY KEY (portfolio_history_id),
+    FOREIGN KEY (user_id) REFERENCES accounts(user_id)
+);
+
+CREATE SEQUENCE asset_seq start with 1;
+CREATE TABLE assets(
+    asset_id bigint NOT NULL DEFAULT nextval('asset_seq'),
+    asset_name varchar(100) NOT NULL UNIQUE,
+    ticker varchar(50) NOT NULL UNIQUE,
+    market_cap bigint NOT NULL,
+    pe_ratio NUMERIC(4,2) NOT NULL,
+    dividend_yield NUMERIC(4,2) NOT NULL,
+    PRIMARY KEY (asset_id)
+);
 ```
 
 
