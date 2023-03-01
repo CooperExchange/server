@@ -5,7 +5,7 @@ $ docker run --rm --name lil-postgres -e POSTGRES_PASSWORD=password -d -v $HOME/
 $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 ```
 
-```
+
 ## API Endpoint Examples for Demo
 
 ### Registration
@@ -54,6 +54,8 @@ $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 	"assetSymbol" : "BTC",
 	"assetCount" : "1.3"
 }
+
+or
 
 {
 	"tradeType": "sell",
