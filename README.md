@@ -6,9 +6,6 @@ $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 ```
 
 ```
-## Database
-To initialize Docker database/tables, visit https://github.com/CooperExchange/database
-
 ## API Endpoint Examples for Demo
 
 ### Registration
