@@ -52,7 +52,8 @@ public class AccountDAO {
     // To-do: Prevent withdrawal if total_deposit > total_withdrawal
     public String withdrawBalanceById(String userId, Double amount) {
 
-        String SQL = "UPDATE accounts SET total_withdrawal = total_withdrawal + ?, remaining_cash = remaining_cash - ? where user_id = ?";
+        String SQL = "UPDATE accounts SET total_withdrawal " +
+                "= total_withdrawal + ?, remaining_cash = remaining_cash - ? where user_id = ?";
 
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
@@ -69,18 +70,20 @@ public class AccountDAO {
 
     public String tradeAssetBySymbol(String userId, Trade trade) {
         System.out.println("User requests asset " + trade.tradeType);
-        // To-Do: There is an issue with "BTC" parsing from the String asset.
-        // It is only querying BTC for now.
-        // I found the bug. I will fix it soon - Bob.
+
+        // Parse price API result
         String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
-        String text_2 = "BTC";
+        String assetSymbol = trade.assetSymbol;
+        String text_2 = assetSymbol.replace("\"", "");
         String text_3 = "&function=CURRENCY_EXCHANGE_RATE&to_currency=USD";
         String query = text_1 + text_2 + text_3;
 
-        String assetSymbol = null;
+
+
         String assetName = null;
         String assetPrice = null;
 
+        // Parse price API result
         try {
             HttpResponse<String> response = Unirest.get(query)
                     .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
@@ -88,7 +91,6 @@ public class AccountDAO {
                     .asString();
 
             JSONObject obj = new JSONObject(response.getBody());
-            assetSymbol = obj.getJSONObject("Realtime Currency Exchange Rate").getString("1. From_Currency Code");
             assetName = obj.getJSONObject("Realtime Currency Exchange Rate").getString("2. From_Currency Name");
             assetPrice = obj.getJSONObject("Realtime Currency Exchange Rate").getString("5. Exchange Rate");
 
