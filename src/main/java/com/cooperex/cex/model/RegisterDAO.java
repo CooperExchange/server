@@ -35,8 +35,10 @@ public class RegisterDAO {
         String randomEmail = "PaulGeorge" + int_random + "@cooper.edu";
         String SQL = "INSERT INTO accounts (first_name, last_name, username, pass_word, email) "
                 + "VALUES ('Paul', 'Kim', '"+randomUsername+"', 'abc123', '"+randomEmail+"');";
+        System.out.println(randomUsername);
         return databaseSQLExecutor.executeSQLStatement(SQL);
     }
+
 }
 
 

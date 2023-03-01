@@ -21,23 +21,26 @@ public class AccountDAO {
     private Connection connection;
 
     public AccountDAO() {
-        System.out.println("AccountDAO object has been initialized with successful DB connection");
+        System.out.println("AccountDAO object has been initialized with successful DB connection!!!!!!!!");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
         DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
         this.databaseSQLExecutor = databaseSQLExecutor;
-        // To be refactored - dev purposes
         this.connection = connection;
     }
 
-    // To-do: Implement error handling if there is no user.
+    // To-do: Implement error handling if there is no user
     public String addBalanceById(String userId, Double amount) {
-        String SQL = "update accounts set total_deposit = total_deposit + ? where user_id = ?;";
+        System.out.println("Deposit func called");
+        String SQL = "UPDATE accounts SET total_deposit " +
+                "= total_deposit + ?,  remaining_cash = remaining_cash + ? where user_id = ?;";
+
         int userIdInt = Integer.parseInt(userId);
 
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setDouble(1, amount);
-            statement.setInt(2, userIdInt);
+            statement.setDouble(2, amount);
+            statement.setInt(3, userIdInt);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -46,13 +49,16 @@ public class AccountDAO {
         return "User balance has been increased by " + amount.toString();
     }
 
-    // To-do: Prevent withdrawing if total_deposit > total_withdrawal
+    // To-do: Prevent withdrawal if total_deposit > total_withdrawal
     public String withdrawBalanceById(String userId, Double amount) {
-        String SQL = "update accounts set total_withdrawal = total_withdrawal + ? where user_id = ?;";
+
+        String SQL = "UPDATE accounts SET total_withdrawal = total_withdrawal + ?, remaining_cash = remaining_cash - ? where user_id = ?";
+
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setDouble(1, amount);
-            statement.setInt(2, userIdInt);
+            statement.setDouble(2, amount);
+            statement.setInt(3, userIdInt);
             statement.executeUpdate();
 
         } catch (SQLException e) {
@@ -93,7 +99,7 @@ public class AccountDAO {
         // Convert String to numbers
         int userIdInt = Integer.parseInt(userId);
         Double assetPriceDouble = Double.parseDouble(assetPrice);
-        Double assetCountDoucle = Double.parseDouble(trade.assetCount);
+        Double assetCountDouble = Double.parseDouble(trade.assetCount);
 
         String SQL = "INSERT INTO trades" +
                 "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
@@ -106,7 +112,7 @@ public class AccountDAO {
             statement.setString(3, assetSymbol);
             statement.setString(4, assetName);
             statement.setDouble(5, assetPriceDouble);
-            statement.setDouble(6, assetCountDoucle);
+            statement.setDouble(6, assetCountDouble);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
