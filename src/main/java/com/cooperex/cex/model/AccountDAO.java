@@ -78,8 +78,6 @@ public class AccountDAO {
         String text_3 = "&function=CURRENCY_EXCHANGE_RATE&to_currency=USD";
         String query = text_1 + text_2 + text_3;
 
-
-
         String assetName = null;
         String assetPrice = null;
 
@@ -100,13 +98,26 @@ public class AccountDAO {
 
         // Convert String to numbers
         int userIdInt = Integer.parseInt(userId);
-        Double assetPriceDouble = Double.parseDouble(assetPrice);
-        Double assetCountDouble = Double.parseDouble(trade.assetCount);
+        double assetPriceDouble = Double.parseDouble(assetPrice);
+        double assetCountDouble = Double.parseDouble(trade.assetCount);
+        String tradeType = trade.tradeType.replace("\"", "");
 
-        String SQL = "INSERT INTO trades" +
-                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-                " (?, ?, ?, ?, ?, ?);";
+        String SQL = null;
+        if (trade.tradeType == "Buy") {
+            SQL = "INSERT INTO trades" +
+                    "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
+                    " (?, ?, ?, ?, ?, ?)";
+//            SQL = "INSERT INTO trades" +
+//                    "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
+//                    " (?, ?, ?, ?, ?, ?);" +
+//                    " INSERT INTO portfolios" +
+//                    "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
+//                    " (?, ?, ?, ?);";
 
+// To be implemented: If there is no portoflio then create a row, if there is asset, then do not.
+// "UPDATE accounts SET current_bal = current_bal - (? * ?) WHERE user_id = ?;";
+
+        }
         try {
             PreparedStatement statement = this.connection.prepareStatement(SQL);
             statement.setString(1, trade.tradeType);
@@ -115,6 +126,10 @@ public class AccountDAO {
             statement.setString(4, assetName);
             statement.setDouble(5, assetPriceDouble);
             statement.setDouble(6, assetCountDouble);
+//            statement.setString(7, assetSymbol);
+//            statement.setInt(8, userIdInt);
+//            statement.setString(9, assetName);
+//            statement.setDouble(10, assetCountDouble);
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
