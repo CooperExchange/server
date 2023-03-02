@@ -52,6 +52,7 @@ $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 {
 	"tradeType": "buy",
 	"assetSymbol" : "BTC",
+	"assetCategory" : "Crypto",
 	"assetCount" : "1.3"
 }
 
@@ -60,6 +61,7 @@ or
 {
 	"tradeType": "sell",
 	"assetSymbol" : "BTC",
+	"assetCategory" : "Crypto",
 	"assetCount" : "0.5"
 }
 
