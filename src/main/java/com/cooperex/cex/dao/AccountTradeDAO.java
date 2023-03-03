@@ -14,7 +14,6 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.*;
 
 public class AccountTradeDAO {
     private DatabaseSQLExecutor databaseSQLExecutor;
