@@ -16,6 +16,7 @@ public class DatabaseSQLExecutor {
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(SQL);
+            statement.close();
             return "Request Success";
         }
         catch(SQLException e) {

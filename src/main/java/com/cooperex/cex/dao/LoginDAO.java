@@ -28,6 +28,7 @@ public class LoginDAO {
             statement.setString(1, login.email);
             statement.setString(2, login.password);
             ResultSet rs = statement.executeQuery();
+            statement.close();
             while (rs.next()) {
                 String userId = Long.toString(rs.getLong("user_id"));
                 return userId;

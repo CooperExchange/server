@@ -37,6 +37,7 @@ public class AccountSettingDAO {
             statement.setString(5, accountSetting.password);
             statement.setInt(6, userIdInt);
             statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -55,6 +56,7 @@ public class AccountSettingDAO {
             statement.setDouble(2, 0);
             statement.setInt(3, userIdInt);
             statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

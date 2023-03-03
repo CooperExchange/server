@@ -185,11 +185,13 @@ public class AccountTradeDAO {
             statement_1.setDouble(5, assetPrice);
             statement_1.setDouble(6, assetCount);
             statement_1.executeUpdate();
+            statement_1.close();
 
             // Get portfolio_id
             statement_2.setInt(1, Integer.parseInt(userId));
             statement_2.setString(2, assetName);
             ResultSet rs = statement_2.executeQuery();
+            statement_2.close();
 
             if (rs.next()) {
                 // Increase asset_count if portfolio_id exists
@@ -199,6 +201,7 @@ public class AccountTradeDAO {
                 statement_3.setDouble(1, assetCount);
                 statement_3.setInt(2, Integer.parseInt(portfolios_id));
                 statement_3.executeUpdate();
+                statement_3.close();
 
             } else {
                 // Insert a row if portfolio_id does NOT exists
@@ -208,12 +211,14 @@ public class AccountTradeDAO {
                 statement_4.setString(3, assetName);
                 statement_4.setDouble(4, assetCount);
                 statement_4.executeUpdate();
+                statement_4.close();
             }
 
             // Update remaining cash in the accounts table
             statement_5.setDouble(1, assetTotalValue);
             statement_5.setInt(2, Integer.parseInt(userId));
             statement_5.executeUpdate();
+            statement_5.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
