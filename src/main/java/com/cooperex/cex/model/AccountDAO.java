@@ -7,6 +7,7 @@ import com.cooperex.cex.DatabaseSQLExecutor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -71,18 +72,15 @@ public class AccountDAO {
     public String tradeAssetBySymbol(String userId, Trade trade) {
         System.out.println("User requests asset " + trade.tradeType);
 
-        // Parse price API result
-
         // Check whether this is a crypto trade
         String assetCategory = trade.assetCategory.replace("\"", "");
         String assetSymbol = trade.assetSymbol.replace("\"", "");
         String assetName = trade.assetName.replace("\"", "");
         String tradeType = trade.tradeType.replace("\"", "");
         double assetCount = Double.parseDouble(trade.assetCount);
-
-
+        double assetPrice = 0;
         String query = null;
-        Double assetPrice = null;
+
         // Check if is crypto
         if (assetCategory.equals("crypto")) {
             String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
@@ -118,47 +116,74 @@ public class AccountDAO {
             return null;
         }
 
-        // Convert String to numbers
-        String SQL = null;
+        // Prepare SQL statements
+        String SQL_1 = null;
+        String SQL_2 = null;
+        String SQL_3 = null;
+        String SQL_4 = null;
+
         if (tradeType.equals("buy")) {
-            SQL = "INSERT INTO trades" +
+            SQL_1 = "INSERT INTO trades" +
                     "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
                     " (?, ?, ?, ?, ?, ?)";
+
+            SQL_2 = "SELECT portfolio_id " +
+                    "FROM portfolios WHERE user_id=? and asset_name=?";
+
+            SQL_3 = "UPDATE portfolios set " +
+                    "asset_count = asset_count + ? " +
+                    "where portfolio_id = ?;";
+
+            SQL_4 = "INSERT INTO portfolios" +
+                    "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
+                    " (?, ?, ?, ?)";
+
+            try {
+                PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
+                PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
+                PreparedStatement statement_3 = this.connection.prepareStatement(SQL_3);
+                PreparedStatement statement_4 = this.connection.prepareStatement(SQL_4);
+
+                // Insert a trade row
+                statement_1.setString(1, tradeType);
+                statement_1.setInt(2, Integer.parseInt(userId));
+                statement_1.setString(3, assetSymbol);
+                statement_1.setString(4, assetName);
+                statement_1.setDouble(5, assetPrice);
+                statement_1.setDouble(6, assetCount);
+                statement_1.executeUpdate();
+
+                // Get portfolio_id
+                statement_2.setInt(1, Integer.parseInt(userId));
+                statement_2.setString(2, assetName);
+                ResultSet rs = statement_2.executeQuery();
+
+                // Check whether portfolio_id exists
+                if (rs.next()) {
+                    String portfolios_id = Long.toString(rs.getLong("portfolio_id"));
+                    System.out.println("portfolio_id: " + portfolios_id);
+                    // Update asset_count if portfolio_id exists
+                    System.out.println("portfoliio_id is found. Update asset_count");
+                    statement_3.setDouble(1, assetCount);
+                    statement_3.setInt(2, Integer.parseInt(portfolios_id));
+                    statement_3.executeUpdate();
+
+                } else {
+                    // Create a new portfolio_id if portfolio_id does NOT exists
+                    System.out.println("portfoliio_id is NOT found. Insert a row");
+                    statement_4.setString(1, assetSymbol);
+                    statement_4.setInt(2, Integer.parseInt(userId));
+                    statement_4.setString(3, assetName);
+                    statement_4.setDouble(4, assetCount);
+                    statement_4.executeUpdate();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        try {
-            PreparedStatement statement = this.connection.prepareStatement(SQL);
-            statement.setString(1, tradeType);
-            statement.setInt(2, Integer.parseInt(userId));
-            statement.setString(3, assetSymbol);
-            statement.setString(4, assetName);
-            statement.setDouble(5, assetPrice);
-            statement.setDouble(6, assetCount);
-//            statement.setString(7, assetSymbol);
-//            statement.setInt(8, userIdInt);
-//            statement.setString(9, assetName);
-//            statement.setDouble(10, assetCountDouble);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        // Check whether this is a sell
-////            SQL = "INSERT INTO trades" +
-////                    "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-////                    " (?, ?, ?, ?, ?, ?);" +
-////                    " INSERT INTO portfolios" +
-////                    "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
-////                    " (?, ?, ?, ?);";
-//
-//// To be implemented: If there is no portoflio then create a row, if there is asset, then do not.
-//// "UPDATE accounts SET current_bal = current_bal - (? * ?) WHERE user_id = ?;";
-//
-//        }
-
-
         return "User request asset trading";
     }
 }
+
 
 
