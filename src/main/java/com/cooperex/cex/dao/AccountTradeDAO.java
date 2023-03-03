@@ -2,7 +2,7 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
 import com.cooperex.cex.DatabaseSQLExecutor;
-import com.cooperex.cex.model.Trade;
+import com.cooperex.cex.model.AccountTrade;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -29,14 +29,13 @@ public class AccountTradeDAO {
         this.connection = connection;
     }
 
-
-    public String tradeAssetBySymbol(String userId, Trade trade) {
-        System.out.println("User requests asset " + trade.tradeType);
-        String assetCategory = trade.assetCategory.replace("\"", "");
-        String assetSymbol = trade.assetSymbol.replace("\"", "");
-        String assetName = trade.assetName.replace("\"", "");
-        String tradeType = trade.tradeType.replace("\"", "");
-        double assetCount = Double.parseDouble(trade.assetCount);
+    public String tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
+        System.out.println("User requests asset " + accountTrade.tradeType);
+        String assetCategory = accountTrade.assetCategory.replace("\"", "");
+        String assetSymbol = accountTrade.assetSymbol.replace("\"", "");
+        String assetName = accountTrade.assetName.replace("\"", "");
+        String tradeType = accountTrade.tradeType.replace("\"", "");
+        double assetCount = Double.parseDouble(accountTrade.assetCount);
         double assetPrice = 0;
         String query = null;
 

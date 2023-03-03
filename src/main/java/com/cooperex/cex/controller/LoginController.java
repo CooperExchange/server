@@ -1,18 +1,18 @@
 package com.cooperex.cex.controller;
-import com.cooperex.cex.dao.LoginFormDAO;
-import com.cooperex.cex.model.LoginForm;
+import com.cooperex.cex.dao.LoginDAO;
+import com.cooperex.cex.model.Login;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class LoginFormController {
-    private LoginFormDAO loginFormDAO;
+public class LoginController {
+    private LoginDAO loginDAO;
 
-    public LoginFormController() {
+    public LoginController() {
         System.out.println("LoginForm Controller object has been initialized!");
-        loginFormDAO = new LoginFormDAO();
+        loginDAO = new LoginDAO();
     }
 
     @GetMapping("/")
@@ -21,8 +21,8 @@ public class LoginFormController {
     }
 
     @PostMapping("/login")
-    public String returnUserId(@RequestBody LoginForm loginForm) {
-        return loginFormDAO.returnUserId(loginForm);
+    public String returnUserId(@RequestBody Login login) {
+        return loginDAO.returnUserId(login);
     }
 }
 

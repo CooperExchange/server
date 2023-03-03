@@ -1,6 +1,6 @@
 package com.cooperex.cex.controller;
 import com.cooperex.cex.dao.AccountTradeDAO;
-import com.cooperex.cex.model.Trade;
+import com.cooperex.cex.model.AccountTrade;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,8 +14,8 @@ public class AccountTradeController {
     }
 
     @PostMapping(path="/{userId}/trade")
-    public String buyAsset(@PathVariable String userId, @RequestBody Trade trade)  {
-        return accountTradeDAO.tradeAssetBySymbol(userId, trade);
+    public String buyAsset(@PathVariable String userId, @RequestBody AccountTrade accountTrade)  {
+        return accountTradeDAO.tradeAssetBySymbol(userId, accountTrade);
     }
 }
 

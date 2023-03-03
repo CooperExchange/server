@@ -2,7 +2,7 @@ package com.cooperex.cex.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class Trade {
+public class AccountTrade {
     public String tradeType;
     public String assetCategory;
     public String assetSymbol;
@@ -10,7 +10,7 @@ public class Trade {
     public String assetCount;
 
     @JsonCreator
-    public Trade(String tradeType,  String assetCategory, String assetSymbol, String assetName, String assetCount) {
+    public AccountTrade(String tradeType,  String assetCategory, String assetSymbol, String assetName, String assetCount) {
         this.tradeType = tradeType;
         this.assetCategory = assetCategory;
         this.assetSymbol = assetSymbol;
