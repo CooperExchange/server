@@ -63,11 +63,12 @@ def withdrawal(user_id, amount):
     if r.status_code != 200:
         print(f"Error! Status: {r.status_code}")
 
-def trade(user_id, tradeType, assetSymbol, assetCount):
+def trade(user_id, tradeType, assetSymbol, assetCount, assetCategory):
     r = requests.post(f'http://localhost:8080/accounts/{user_id}/trade', json={
         "tradeType": tradeType,
         "assetSymbol" : assetSymbol,
-        "assetCount" : assetCount
+        "assetCount" : assetCount,
+        "assetCategory" : assetCategory
     })
 
     if r.status_code != 200:
@@ -92,9 +93,10 @@ match action:
                     withdrawal(user_id, amount)
                 case "Trade":
                     tradeType = input("Trade Type (Buy or Sell): ")
+                    assetCategory = input("Category: ")
                     assetSymbol = input("Symbol: ")
                     assetCount = input("Number of Shares: ")
-                    trade(user_id, tradeType, assetSymbol, assetCount)
+                    trade(user_id, tradeType, assetSymbol, assetCount, assetCategory)
                 case "Logout":
                     exit()
                 case _:
