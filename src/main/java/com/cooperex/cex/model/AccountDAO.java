@@ -71,8 +71,6 @@ public class AccountDAO {
 
     public String tradeAssetBySymbol(String userId, Trade trade) {
         System.out.println("User requests asset " + trade.tradeType);
-
-        // Check whether this is a crypto trade
         String assetCategory = trade.assetCategory.replace("\"", "");
         String assetSymbol = trade.assetSymbol.replace("\"", "");
         String assetName = trade.assetName.replace("\"", "");
@@ -81,7 +79,6 @@ public class AccountDAO {
         double assetPrice = 0;
         String query = null;
 
-        // Check if is crypto
         if (assetCategory.equals("crypto")) {
             String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
             String text_2 = assetSymbol;
@@ -105,11 +102,15 @@ public class AccountDAO {
             JSONObject obj = new JSONObject(response.getBody());
 
             if (assetCategory.equals("crypto")) {
-                assetPrice = Double.parseDouble(obj.getJSONObject("Realtime Currency Exchange Rate").getString("5. Exchange Rate"));
+                assetPrice = Double.parseDouble(obj
+                        .getJSONObject("Realtime Currency Exchange Rate")
+                        .getString("5. Exchange Rate"));
             }
 
             if (assetCategory.equals("stock")) {
-                assetPrice = Double.parseDouble(obj.getJSONObject("Global Quote").getString("05. price"));
+                assetPrice = Double.parseDouble(obj
+                        .getJSONObject("Global Quote")
+                        .getString("05. price"));
             }
 
         } catch (UnirestException e) {
@@ -122,64 +123,68 @@ public class AccountDAO {
         String SQL_3 = null;
         String SQL_4 = null;
 
+        SQL_1 = "INSERT INTO trades" +
+                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
+                " (?, ?, ?, ?, ?, ?)";
+
+        SQL_2 = "SELECT portfolio_id " +
+                "FROM portfolios WHERE user_id=? and asset_name=?";
+
+
+        SQL_4 = "INSERT INTO portfolios" +
+                "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
+                " (?, ?, ?, ?)";
+
         if (tradeType.equals("buy")) {
-            SQL_1 = "INSERT INTO trades" +
-                    "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-                    " (?, ?, ?, ?, ?, ?)";
-
-            SQL_2 = "SELECT portfolio_id " +
-                    "FROM portfolios WHERE user_id=? and asset_name=?";
-
             SQL_3 = "UPDATE portfolios set " +
                     "asset_count = asset_count + ? " +
                     "where portfolio_id = ?;";
+        } else {
+            SQL_3 = "UPDATE portfolios set " +
+                    "asset_count = asset_count - ? " +
+                    "where portfolio_id = ?;";
+        }
+        
+        try {
+            PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
+            PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
+            PreparedStatement statement_3 = this.connection.prepareStatement(SQL_3);
+            PreparedStatement statement_4 = this.connection.prepareStatement(SQL_4);
 
-            SQL_4 = "INSERT INTO portfolios" +
-                    "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
-                    " (?, ?, ?, ?)";
+            // Insert a trade row
+            statement_1.setString(1, tradeType);
+            statement_1.setInt(2, Integer.parseInt(userId));
+            statement_1.setString(3, assetSymbol);
+            statement_1.setString(4, assetName);
+            statement_1.setDouble(5, assetPrice);
+            statement_1.setDouble(6, assetCount);
+            statement_1.executeUpdate();
 
-            try {
-                PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
-                PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
-                PreparedStatement statement_3 = this.connection.prepareStatement(SQL_3);
-                PreparedStatement statement_4 = this.connection.prepareStatement(SQL_4);
+            // Get portfolio_id
+            statement_2.setInt(1, Integer.parseInt(userId));
+            statement_2.setString(2, assetName);
+            ResultSet rs = statement_2.executeQuery();
 
-                // Insert a trade row
-                statement_1.setString(1, tradeType);
-                statement_1.setInt(2, Integer.parseInt(userId));
-                statement_1.setString(3, assetSymbol);
-                statement_1.setString(4, assetName);
-                statement_1.setDouble(5, assetPrice);
-                statement_1.setDouble(6, assetCount);
-                statement_1.executeUpdate();
+            if (rs.next()) {
+                // Increase asset_count if portfolio_id exists
+                String portfolios_id = Long.toString(rs.getLong("portfolio_id"));
+                System.out.println("portfolio_id: " + portfolios_id);
+                System.out.println("portfoliio_id is found. Update asset_count");
+                statement_3.setDouble(1, assetCount);
+                statement_3.setInt(2, Integer.parseInt(portfolios_id));
+                statement_3.executeUpdate();
 
-                // Get portfolio_id
-                statement_2.setInt(1, Integer.parseInt(userId));
-                statement_2.setString(2, assetName);
-                ResultSet rs = statement_2.executeQuery();
-
-                // Check whether portfolio_id exists
-                if (rs.next()) {
-                    String portfolios_id = Long.toString(rs.getLong("portfolio_id"));
-                    System.out.println("portfolio_id: " + portfolios_id);
-                    // Update asset_count if portfolio_id exists
-                    System.out.println("portfoliio_id is found. Update asset_count");
-                    statement_3.setDouble(1, assetCount);
-                    statement_3.setInt(2, Integer.parseInt(portfolios_id));
-                    statement_3.executeUpdate();
-
-                } else {
-                    // Create a new portfolio_id if portfolio_id does NOT exists
-                    System.out.println("portfoliio_id is NOT found. Insert a row");
-                    statement_4.setString(1, assetSymbol);
-                    statement_4.setInt(2, Integer.parseInt(userId));
-                    statement_4.setString(3, assetName);
-                    statement_4.setDouble(4, assetCount);
-                    statement_4.executeUpdate();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                // Insert a row if portfolio_id does NOT exists
+                System.out.println("portfoliio_id is NOT found. Insert a row");
+                statement_4.setString(1, assetSymbol);
+                statement_4.setInt(2, Integer.parseInt(userId));
+                statement_4.setString(3, assetName);
+                statement_4.setDouble(4, assetCount);
+                statement_4.executeUpdate();
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return "User request asset trading";
     }
