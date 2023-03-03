@@ -36,8 +36,11 @@ public class AccountTradeDAO {
         String tradeType = accountTrade.tradeType.replace("\"", "");
         double assetCount = Double.parseDouble(accountTrade.assetCount);
         double assetPrice = 0;
+        double remainingCash = 0;
+        double assetTotalValue = 0;
         String query = null;
 
+        // Step 1. Determine API query based on asset type
         if (assetCategory.equals("crypto")) {
             String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
             String text_2 = assetSymbol;
@@ -51,7 +54,7 @@ public class AccountTradeDAO {
             query = text_1 + text_2;
         }
 
-        // Parse price API result
+        // Step 2. Request Alpha Vantage API and parse the price
         try {
             HttpResponse<String> response = Unirest.get(query)
                     .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
@@ -71,16 +74,64 @@ public class AccountTradeDAO {
                         .getJSONObject("Global Quote")
                         .getString("05. price"));
             }
+            // Determine the total value of the user's trade
+            assetTotalValue = assetCount * assetPrice;
 
         } catch (UnirestException e) {
-            return null;
+            return "Unexpected error has occured.";
         }
 
-        // Prepare SQL statements
+        // Step 3. Determine whether user can buy or sell
+        // For "buy", check whether user has enough remaining balance
+        if (tradeType.equals("buy")) {
+            String GET_REMAINING_CASH = "SELECT remaining_cash " +
+                    "FROM accounts WHERE user_id=?";
+
+            try (PreparedStatement statement = this.connection.prepareStatement(GET_REMAINING_CASH);) {
+                statement.setInt(1, Integer.parseInt(userId));
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    remainingCash = rs.getDouble("remaining_cash");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            System.out.println("The total value of the trade is "+ assetTotalValue);
+
+            if (remainingCash < assetTotalValue) {
+                return "Failed to buy. User remaining cash is NOT enough";
+            }
+        }
+
+        // For "sell", check whether user has enough assets
+        if (tradeType.equals("sell")) {
+            String GET_ASSET_COUNT = "SELECT asset_count " +
+                    "FROM portfolios WHERE user_id=? and asset_symbol=?";
+            double currentAssetCount = 0;
+
+            try (PreparedStatement statement = this.connection.prepareStatement(GET_ASSET_COUNT);) {
+                statement.setInt(1, Integer.parseInt(userId));
+                statement.setString(2, assetSymbol);
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    currentAssetCount = rs.getDouble("asset_count");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            if (assetCount > currentAssetCount) {
+                return "Failed to sell. User does not have enough assets to sell";
+            }
+        }
+
+        // Step 4. Prepare SQL statements
         String SQL_1 = null;
         String SQL_2 = null;
         String SQL_3 = null;
         String SQL_4 = null;
+        String SQL_5 = null;
 
         SQL_1 = "INSERT INTO trades" +
                 "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
@@ -95,20 +146,36 @@ public class AccountTradeDAO {
                 " (?, ?, ?, ?)";
 
         if (tradeType.equals("buy")) {
-            SQL_3 = "UPDATE portfolios set " +
+            SQL_3 = "UPDATE portfolios SET " +
                     "asset_count = asset_count + ? " +
                     "where portfolio_id = ?;";
+
+            SQL_5 = "UPDATE accounts SET " +
+                    "remaining_cash = remaining_cash - ? " +
+                    "where user_id = ?;";
+
+
         } else {
-            SQL_3 = "UPDATE portfolios set " +
+            SQL_3 = "UPDATE portfolios SET " +
                     "asset_count = asset_count - ? " +
                     "where portfolio_id = ?;";
+
+            SQL_5 = "UPDATE accounts SET " +
+                    "remaining_cash = remaining_cash + ? " +
+                    "where user_id = ?;";
         }
 
+        // Also update the remaining balance
+        // For "sell", increase the remaining balance
+        // For "buy", decrease the reamining balance
+
+        // Step 5. Execute SQL commands
         try {
             PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
             PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
             PreparedStatement statement_3 = this.connection.prepareStatement(SQL_3);
             PreparedStatement statement_4 = this.connection.prepareStatement(SQL_4);
+            PreparedStatement statement_5 = this.connection.prepareStatement(SQL_5);
 
             // Insert a trade row
             statement_1.setString(1, tradeType);
@@ -142,6 +209,12 @@ public class AccountTradeDAO {
                 statement_4.setDouble(4, assetCount);
                 statement_4.executeUpdate();
             }
+
+            // Update remaining cash in the accounts table
+            statement_5.setDouble(1, assetTotalValue);
+            statement_5.setInt(2, Integer.parseInt(userId));
+            statement_5.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
