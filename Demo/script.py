@@ -16,7 +16,7 @@ def makeAccount():
     })
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
 
 def updateAccount(user_id):
     firstName = input("What is your First Name?\n")
@@ -34,7 +34,7 @@ def updateAccount(user_id):
     })
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
 
 def login():
     email = input("Email: ")
@@ -46,7 +46,7 @@ def login():
     })
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
     return r.content
 
 def deposit(user_id, amount):
@@ -54,25 +54,26 @@ def deposit(user_id, amount):
     r = requests.post(f'http://localhost:8080/accounts/{user_id}/deposit', data=amount, headers=header)
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
 
 def withdrawal(user_id, amount):
     header = {'content-type': 'application/json'}
     r = requests.post(f'http://localhost:8080/accounts/{user_id}/withdrawal', data=amount, headers=header)
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
 
-def trade(user_id, tradeType, assetSymbol, assetCount, assetCategory):
+def trade(user_id, tradeType, assetSymbol, assetName, assetCount, assetCategory):
     r = requests.post(f'http://localhost:8080/accounts/{user_id}/trade', json={
         "tradeType": tradeType,
         "assetSymbol" : assetSymbol,
-        "assetCount" : assetCount,
-        "assetCategory" : assetCategory
+        "assetName" : assetName,
+        "assetCategory" : assetCategory,
+        "assetCount" : assetCount
     })
 
     if r.status_code != 200:
-        print(f"Error! Status: {r.status_code}")
+        print(f"{r.reason} Status: {r.status_code}")
 
 action = input("Select Option: \n> Make Account\n> Login\n")
 match action:
@@ -94,13 +95,13 @@ match action:
                 case "Trade":
                     tradeType = input("Trade Type (Buy or Sell): ")
                     assetCategory = input("Category: ")
+                    assetName = input("Name: ")
                     assetSymbol = input("Symbol: ")
                     assetCount = input("Number of Shares: ")
-                    trade(user_id, tradeType, assetSymbol, assetCount, assetCategory)
+                    trade(user_id, tradeType, assetSymbol, assetName, assetCount, assetCategory)
                 case "Logout":
                     exit()
                 case _:
                     print("No option selected")
     case _:
         print("No option selected")
-
