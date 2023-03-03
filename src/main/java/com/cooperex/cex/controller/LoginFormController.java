@@ -1,6 +1,5 @@
-
 package com.cooperex.cex.controller;
-import com.cooperex.cex.model.LoginFormDAO;
+import com.cooperex.cex.dao.LoginFormDAO;
 import com.cooperex.cex.model.LoginForm;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;

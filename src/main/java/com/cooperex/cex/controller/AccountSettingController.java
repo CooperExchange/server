@@ -1,7 +1,7 @@
 package com.cooperex.cex.controller;
 
 import com.cooperex.cex.model.AccountSetting;
-import com.cooperex.cex.model.AccountSettingDAO;
+import com.cooperex.cex.dao.AccountSettingDAO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
