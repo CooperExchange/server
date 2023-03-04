@@ -32,13 +32,13 @@ public class AlphaVantage {
 
     public Double getAssetPrice(String query, String assetCategory) {
         double assetPrice = 0;
-        JSONObject obj = new JSONObject(response.getBody());
-
         try {
             HttpResponse<String> response = Unirest.get(query)
                     .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
                     .header("X-RapidAPI-Host", "alpha-vantage.p.rapidapi.com")
                     .asString();
+
+            JSONObject obj = new JSONObject(response.getBody());
 
             if (assetCategory.equals("crypto")) {
                 assetPrice = Double.parseDouble(obj

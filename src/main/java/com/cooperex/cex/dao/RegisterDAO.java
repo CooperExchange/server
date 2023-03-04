@@ -22,8 +22,8 @@ public class RegisterDAO {
     public String createAccount(Register account) {
         // Prepare SQL statement
         String SQL = "INSERT INTO accounts (first_name, last_name, username, pass_word, email) "
-                    + "VALUES ('"+account.firstName+"','"+account.lastName+"'," +
-                "'"+account.username+"', '"+account.password+"', '"+account.email+"');";
+                    + "VALUES ('"+account.getFirstName()+"','"+account.getLastName()+"'," +
+                "'"+account.getUsername()+"', '"+account.getPassword()+"', '"+account.getEmail()+"');";
         return databaseSQLExecutor.executeSQLStatement(SQL);
     }
 

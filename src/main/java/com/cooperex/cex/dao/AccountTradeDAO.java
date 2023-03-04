@@ -42,13 +42,13 @@ public class AccountTradeDAO {
         double assetTotalValue = 0;
         String query = "";
 
-        // Step 1. Determine API query based on asset type
+        // Step 1. Get price based on asset type
         AlphaVantage alphaVantage = new AlphaVantage();
         query = alphaVantage.getQueryByAssetCategory(assetCategory, assetSymbol);
         assetPrice = alphaVantage.getAssetPrice(query, assetCategory);
         assetTotalValue = assetPrice * assetCount;
 
-        // Step 3. Determine whether user can buy or sell
+        // Step 2. Determine whether user can buy or sell
         // For "buy", check whether user has enough remaining balance
         if (tradeType.equals("buy")) {
             String GET_REMAINING_CASH = "SELECT remaining_cash " +
@@ -93,7 +93,7 @@ public class AccountTradeDAO {
             }
         }
 
-        // Step 4. Prepare SQL statements
+        // Step 3. Prepare SQL statements
         String SQL_1 = null;
         String SQL_2 = null;
         String SQL_3 = null;
@@ -132,11 +132,7 @@ public class AccountTradeDAO {
                     "where user_id = ?;";
         }
 
-        // Also update the remaining balance
-        // For "sell", increase the remaining balance
-        // For "buy", decrease the reamining balance
-
-        // Step 5. Execute SQL commands
+        // Step 4. Execute SQL commands
         try {
             PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
             PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
