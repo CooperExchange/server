@@ -22,8 +22,8 @@ public class AccountSettingDAO {
 
     // To-do: Implement error handling for username and email duplicates
     public String updateAccountInfoById(String userId, AccountSetting accountSetting) {
-        System.out.println("User requests account info update");
 
+        // Create an account
         String SQL = "UPDATE accounts set " +
                 "email = ?, first_name = ?, last_name = ?, username = ?, pass_word = ? " +
                 "where user_id = ?;";

@@ -19,3 +19,4 @@ com/cooperex/cex/Application.class
 com/cooperex/cex/controller/AccountTradeController.class
 com/cooperex/cex/dao/AccountSettingDAO.class
 com/cooperex/cex/dao/RegisterDAO.class
+com/cooperex/cex/api/AlphaVantage.class

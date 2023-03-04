@@ -17,11 +17,11 @@ public class DatabaseSQLExecutor {
             Statement statement = connection.createStatement();
             statement.executeUpdate(SQL);
             statement.close();
-            return "Request Success";
+            return "Request success";
         }
         catch(SQLException e) {
             e.printStackTrace();
-            return "Request Fail";
+            return "Request fail";
         }
     }
 }

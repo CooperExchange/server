@@ -3,6 +3,8 @@ package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
 import com.cooperex.cex.DatabaseSQLExecutor;
 import com.cooperex.cex.model.AccountTrade;
+import com.cooperex.cex.api.AlphaVantage;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -38,48 +40,13 @@ public class AccountTradeDAO {
         double assetPrice = 0;
         double remainingCash = 0;
         double assetTotalValue = 0;
-        String query = null;
+        String query = "";
 
         // Step 1. Determine API query based on asset type
-        if (assetCategory.equals("crypto")) {
-            String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
-            String text_2 = assetSymbol;
-            String text_3 = "&function=CURRENCY_EXCHANGE_RATE&to_currency=USD";
-            query = text_1 + text_2 + text_3;
-        }
-
-        if (assetCategory.equals("stock")) {
-            String text_1 = "https://alpha-vantage.p.rapidapi.com/query?function=GLOBAL_QUOTE&symbol=";
-            String text_2 = assetSymbol;
-            query = text_1 + text_2;
-        }
-
-        // Step 2. Request Alpha Vantage API and parse the price
-        try {
-            HttpResponse<String> response = Unirest.get(query)
-                    .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
-                    .header("X-RapidAPI-Host", "alpha-vantage.p.rapidapi.com")
-                    .asString();
-
-            JSONObject obj = new JSONObject(response.getBody());
-
-            if (assetCategory.equals("crypto")) {
-                assetPrice = Double.parseDouble(obj
-                        .getJSONObject("Realtime Currency Exchange Rate")
-                        .getString("5. Exchange Rate"));
-            }
-
-            if (assetCategory.equals("stock")) {
-                assetPrice = Double.parseDouble(obj
-                        .getJSONObject("Global Quote")
-                        .getString("05. price"));
-            }
-            // Determine the total value of the user's trade
-            assetTotalValue = assetCount * assetPrice;
-
-        } catch (UnirestException e) {
-            return "Unexpected error has occured.";
-        }
+        AlphaVantage alphaVantage = new AlphaVantage();
+        query = alphaVantage.getQueryByAssetCategory(assetCategory, assetSymbol);
+        assetPrice = alphaVantage.getAssetPrice(query, assetCategory);
+        assetTotalValue = assetPrice * assetCount;
 
         // Step 3. Determine whether user can buy or sell
         // For "buy", check whether user has enough remaining balance
@@ -185,13 +152,11 @@ public class AccountTradeDAO {
             statement_1.setDouble(5, assetPrice);
             statement_1.setDouble(6, assetCount);
             statement_1.executeUpdate();
-            statement_1.close();
 
             // Get portfolio_id
             statement_2.setInt(1, Integer.parseInt(userId));
             statement_2.setString(2, assetName);
             ResultSet rs = statement_2.executeQuery();
-            statement_2.close();
 
             if (rs.next()) {
                 // Increase asset_count if portfolio_id exists
@@ -201,7 +166,6 @@ public class AccountTradeDAO {
                 statement_3.setDouble(1, assetCount);
                 statement_3.setInt(2, Integer.parseInt(portfolios_id));
                 statement_3.executeUpdate();
-                statement_3.close();
 
             } else {
                 // Insert a row if portfolio_id does NOT exists
@@ -211,14 +175,12 @@ public class AccountTradeDAO {
                 statement_4.setString(3, assetName);
                 statement_4.setDouble(4, assetCount);
                 statement_4.executeUpdate();
-                statement_4.close();
             }
 
             // Update remaining cash in the accounts table
             statement_5.setDouble(1, assetTotalValue);
             statement_5.setInt(2, Integer.parseInt(userId));
             statement_5.executeUpdate();
-            statement_5.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
