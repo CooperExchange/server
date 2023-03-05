@@ -1,6 +1,6 @@
 package com.cooperex.cex.controller;
-import com.cooperex.cex.dao.AccountPortfolioDAO;
 import org.springframework.web.bind.annotation.*;
+import com.cooperex.cex.dao.AccountPortfolioDAO;
 
 @RestController
 @RequestMapping("/accounts")

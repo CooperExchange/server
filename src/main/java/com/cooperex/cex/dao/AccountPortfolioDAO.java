@@ -17,7 +17,6 @@ public class AccountPortfolioDAO {
         this.connection = connection;
     }
 
-    // Retrieve
     public String getPortfolioById(String userId) {
         // Step 1. Calculate Networth
         // Use user_id to get current asset counts for each
