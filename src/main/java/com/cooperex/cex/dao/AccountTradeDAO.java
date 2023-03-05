@@ -32,11 +32,11 @@ public class AccountTradeDAO {
 
     public String tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
         System.out.println("User requests asset " + accountTrade.tradeType);
-        String assetCategory = accountTrade.assetCategory.replace("\"", "");
-        String assetSymbol = accountTrade.assetSymbol.replace("\"", "");
-        String assetName = accountTrade.assetName.replace("\"", "");
-        String tradeType = accountTrade.tradeType.replace("\"", "");
-        double assetCount = Double.parseDouble(accountTrade.assetCount);
+        String assetCategory = accountTrade.getAssetCategory();
+        String assetSymbol = accountTrade.getAssetSymbol();
+        String assetName = accountTrade.getAssetName();
+        String tradeType = accountTrade.getTradeType();
+        double assetCount = accountTrade.getAssetCount();
         double assetPrice = 0;
         double remainingCash = 0;
         double assetTotalValue = 0;

@@ -3,7 +3,6 @@ com/cooperex/cex/dao/AccountBalanceDAO.class
 com/cooperex/cex/model/AccountSetting.class
 com/cooperex/cex/model/Register.class
 com/cooperex/cex/controller/AccountBalanceController.class
-com/cooperex/cex/model/Account.class
 com/cooperex/cex/controller/AccountSettingController.class
 com/cooperex/cex/util/DataAccessObject.class
 com/cooperex/cex/controller/RegisterController.class

@@ -17,4 +17,25 @@ public class AccountTrade {
         this.assetName = assetName;
         this.assetCount = assetCount;
     }
+
+    public String getTradeType() {
+        return tradeType.replace("\"", "");
+    }
+
+    public String getAssetCategory() {
+        return assetCategory.replace("\"", "");
+    }
+
+    public String getAssetSymbol() {
+        return assetSymbol.replace("\"", "");
+    }
+
+    public String getAssetName() {
+        return assetName.replace("\"", "");
+    }
+
+    public Double getAssetCount() {
+        return Double.parseDouble(assetCount);
+    }
+
 }

@@ -30,11 +30,11 @@ public class AccountSettingDAO {
 
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setString(1, accountSetting.email);
-            statement.setString(2, accountSetting.firstName);
-            statement.setString(3, accountSetting.lastName);
-            statement.setString(4, accountSetting.username);
-            statement.setString(5, accountSetting.password);
+            statement.setString(1, accountSetting.getEmail());
+            statement.setString(2, accountSetting.getFirstName());
+            statement.setString(3, accountSetting.getLastName());
+            statement.setString(4, accountSetting.getUsername());
+            statement.setString(5, accountSetting.getPassword());
             statement.setInt(6, userIdInt);
             statement.executeUpdate();
             statement.close();

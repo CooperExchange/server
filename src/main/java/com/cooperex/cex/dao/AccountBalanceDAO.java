@@ -38,7 +38,6 @@ public class AccountBalanceDAO {
         return "User deposit has been increased by " + amount.toString();
     }
 
-
     public String withdrawBalanceById(String userId, Double amount) {
         String GET_REMAINING_CASH = "SELECT remaining_cash " +
                 "FROM accounts WHERE user_id=?";
@@ -75,7 +74,6 @@ public class AccountBalanceDAO {
             e.printStackTrace();
         }
         return "User withdrawal has been increased by " + amount.toString();
-
     }
 
 }
