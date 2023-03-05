@@ -51,5 +51,13 @@ public class AccountPortfolioDAO {
         return json;
     }
 
+    public double getPortfolioValueById(String userId) {
+        System.out.println("");
+        // Apply a different Query for stocks/crypto
+
+
+        return 10000;
+    }
+
 }
 

@@ -97,16 +97,15 @@ public class AccountTradeDAO {
         String SQL_5 = null;
 
         SQL_1 = "INSERT INTO trades" +
-                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-                " (?, ?, ?, ?, ?, ?)";
+                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count, asset_category) VALUES " +
+                " (?, ?, ?, ?, ?, ?, ?)";
 
         SQL_2 = "SELECT portfolio_id " +
                 "FROM portfolios WHERE user_id=? and asset_name=?";
 
-
         SQL_4 = "INSERT INTO portfolios" +
-                "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
-                " (?, ?, ?, ?)";
+                "  (asset_symbol, user_id, asset_name, asset_count, asset_category) VALUES " +
+                " (?, ?, ?, ?, ?)";
 
         if (tradeType.equals("buy")) {
             SQL_3 = "UPDATE portfolios SET " +
@@ -116,7 +115,6 @@ public class AccountTradeDAO {
             SQL_5 = "UPDATE accounts SET " +
                     "remaining_cash = remaining_cash - ? " +
                     "where user_id = ?;";
-
 
         } else {
             SQL_3 = "UPDATE portfolios SET " +
@@ -143,6 +141,7 @@ public class AccountTradeDAO {
             statement_1.setString(4, assetName);
             statement_1.setDouble(5, assetPrice);
             statement_1.setDouble(6, assetCount);
+            statement_1.setString(7, assetCategory);
             statement_1.executeUpdate();
 
             // Get portfolio_id
@@ -166,6 +165,7 @@ public class AccountTradeDAO {
                 statement_4.setInt(2, Integer.parseInt(userId));
                 statement_4.setString(3, assetName);
                 statement_4.setDouble(4, assetCount);
+                statement_4.setString(5, assetCategory);
                 statement_4.executeUpdate();
             }
 

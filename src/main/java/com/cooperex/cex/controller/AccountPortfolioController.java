@@ -16,5 +16,10 @@ public class AccountPortfolioController {
     public String getPortfolio(@PathVariable String userId){
         return accountPortfolioDAO.getPortfolioById(userId);
     }
+
+    @GetMapping(path="/{userId}/portfolio-value")
+    public double getPortfolioValue(@PathVariable String userId){
+        return accountPortfolioDAO.getPortfolioValueById(userId);
+    }
 }
 
