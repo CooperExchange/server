@@ -29,7 +29,6 @@ public class AlphaVantage {
         return query;
     }
 
-
     public Double getAssetPrice(String query, String assetCategory) {
         double assetPrice = 0;
         try {
@@ -56,5 +55,6 @@ public class AlphaVantage {
             return .0;
         }
     }
+
 }
 

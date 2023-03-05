@@ -14,8 +14,10 @@ com/cooperex/cex/dao/LoginDAO.class
 com/cooperex/cex/DatabaseSQLExecutor.class
 com/cooperex/cex/model/AccountTrade.class
 com/cooperex/cex/controller/LoginController.class
+com/cooperex/cex/controller/AccountPortfolioController.class
 com/cooperex/cex/Application.class
 com/cooperex/cex/controller/AccountTradeController.class
 com/cooperex/cex/dao/AccountSettingDAO.class
 com/cooperex/cex/dao/RegisterDAO.class
 com/cooperex/cex/api/AlphaVantage.class
+com/cooperex/cex/dao/AccountPortfolioDAO.class

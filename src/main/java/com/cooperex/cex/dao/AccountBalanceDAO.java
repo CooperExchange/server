@@ -1,21 +1,17 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.DatabaseSQLExecutor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 
 public class AccountBalanceDAO {
-    private DatabaseSQLExecutor databaseSQLExecutor;
     private Connection connection;
 
     public AccountBalanceDAO() {
         System.out.println("AccountBalanceDAO object has been initialized with successful DB connection!");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
-        DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
-        this.databaseSQLExecutor = databaseSQLExecutor;
         this.connection = connection;
     }
 

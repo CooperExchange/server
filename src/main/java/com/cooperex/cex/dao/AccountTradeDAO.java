@@ -1,7 +1,6 @@
 
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.DatabaseSQLExecutor;
 import com.cooperex.cex.model.AccountTrade;
 import com.cooperex.cex.api.AlphaVantage;
 
@@ -18,15 +17,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AccountTradeDAO {
-    private DatabaseSQLExecutor databaseSQLExecutor;
     private Connection connection;
 
     public AccountTradeDAO() {
         System.out.println("AccountTradeDAO object has been initialized with successful DB connection!");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
-        DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
-        this.databaseSQLExecutor = databaseSQLExecutor;
         this.connection = connection;
     }
 
