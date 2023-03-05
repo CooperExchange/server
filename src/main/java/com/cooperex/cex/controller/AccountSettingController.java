@@ -11,8 +11,7 @@ public class AccountSettingController {
 
     public AccountSettingController() {
         System.out.println("Account Setting Controller object has been initialized!");
-        AccountSettingDAO accountSettingDAO = new AccountSettingDAO();
-        this.accountSettingDAO = accountSettingDAO;
+        this.accountSettingDAO = new AccountSettingDAO();;
     }
 
     @PostMapping(path="/{userId}/update")

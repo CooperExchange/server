@@ -1,37 +1,34 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.DatabaseSQLExecutor;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class AccountBalanceDAO {
-    private DatabaseSQLExecutor databaseSQLExecutor;
     private Connection connection;
 
     public AccountBalanceDAO() {
         System.out.println("AccountBalanceDAO object has been initialized with successful DB connection!");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
-        DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
-        this.databaseSQLExecutor = databaseSQLExecutor;
         this.connection = connection;
     }
 
-    // To-do: Implement error handling if there is no user
     public String addBalanceById(String userId, Double amount) {
-        System.out.println("Deposit func called");
-        String SQL = "UPDATE accounts SET total_deposit " +
+        String UPDATE_TOTAL_DEPOSIT = "UPDATE accounts SET total_deposit " +
                 "= total_deposit + ?,  remaining_cash = remaining_cash + ? where user_id = ?;";
 
         int userIdInt = Integer.parseInt(userId);
 
-        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_TOTAL_DEPOSIT);) {
             statement.setDouble(1, amount);
             statement.setDouble(2, amount);
             statement.setInt(3, userIdInt);
             statement.executeUpdate();
+            statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -39,10 +36,7 @@ public class AccountBalanceDAO {
         return "User deposit has been increased by " + amount.toString();
     }
 
-    // To-do: Prevent withdrawal if total_deposit > total_withdrawal
     public String withdrawBalanceById(String userId, Double amount) {
-
-        // Check user remaining cash
         String GET_REMAINING_CASH = "SELECT remaining_cash " +
                 "FROM accounts WHERE user_id=?";
 
@@ -53,13 +47,12 @@ public class AccountBalanceDAO {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 remainingCash = rs.getDouble("remaining_cash");
-                System.out.println(remainingCash);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // Prevent over withdrawal
+        // Prevent overdraft
         if (remainingCash < amount) {
             return "User failed to withdraw. Please check the remaining balance.";
         }
@@ -73,15 +66,13 @@ public class AccountBalanceDAO {
             statement.setDouble(2, amount);
             statement.setInt(3, userIdInt);
             statement.executeUpdate();
+            statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return "User withdrawal has been increased by " + amount.toString();
-
     }
 
 }
-
-
 

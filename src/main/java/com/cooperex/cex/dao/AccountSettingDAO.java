@@ -1,42 +1,39 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.model.AccountSetting;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.DatabaseSQLExecutor;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class AccountSettingDAO {
-    private DatabaseSQLExecutor databaseSQLExecutor;
     private Connection connection;
 
     public AccountSettingDAO() {
         System.out.println("AccountSettingDAO object has been initialized with successful DB connection");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
-        DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
-        this.databaseSQLExecutor = databaseSQLExecutor;
         this.connection = connection;
     }
 
     // To-do: Implement error handling for username and email duplicates
     public String updateAccountInfoById(String userId, AccountSetting accountSetting) {
-        System.out.println("User requests account info update");
 
+        // Create an account
         String SQL = "UPDATE accounts set " +
                 "email = ?, first_name = ?, last_name = ?, username = ?, pass_word = ? " +
                 "where user_id = ?;";
 
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setString(1, accountSetting.email);
-            statement.setString(2, accountSetting.firstName);
-            statement.setString(3, accountSetting.lastName);
-            statement.setString(4, accountSetting.username);
-            statement.setString(5, accountSetting.password);
+            statement.setString(1, accountSetting.getEmail());
+            statement.setString(2, accountSetting.getFirstName());
+            statement.setString(3, accountSetting.getLastName());
+            statement.setString(4, accountSetting.getUsername());
+            statement.setString(5, accountSetting.getPassword());
             statement.setInt(6, userIdInt);
             statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -55,6 +52,7 @@ public class AccountSettingDAO {
             statement.setDouble(2, 0);
             statement.setInt(3, userIdInt);
             statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

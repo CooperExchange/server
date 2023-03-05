@@ -25,8 +25,8 @@ public class LoginDAO {
                 "FROM accounts WHERE email=? and pass_word=?";
 
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setString(1, login.email);
-            statement.setString(2, login.password);
+            statement.setString(1, login.getEmail());
+            statement.setString(2, login.getPassword());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 String userId = Long.toString(rs.getLong("user_id"));

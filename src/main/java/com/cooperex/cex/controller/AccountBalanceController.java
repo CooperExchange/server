@@ -8,7 +8,7 @@ public class AccountBalanceController {
     private AccountBalanceDAO accountBalanceDAO;
 
     public AccountBalanceController() {
-        System.out.println("Account Controller object has been initialized!");
+        System.out.println("Account Balance Controller object has been initialized!");
         accountBalanceDAO = new AccountBalanceDAO();
     }
 

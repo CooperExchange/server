@@ -2,7 +2,7 @@
 
 ```
 $ docker run --rm --name lil-postgres -e POSTGRES_PASSWORD=password -d -v $HOME/srv/postgres:/var/lib/postgresql/data -p 5432:5432 postgres
-$ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
+$ mvn package && java -jar target/cex-0.0.1-SNAPSHOT-spring-boot.jar
 ```
 
 
@@ -52,7 +52,8 @@ $ mvn package && java -jar target/rps-0.0.1-SNAPSHOT-spring-boot.jar
 {
 	"tradeType": "buy",
 	"assetSymbol" : "BTC",
-	"assetCategory" : "Crypto",
+	"assetName" : "Bitcoin",
+	"assetCategory" : "crypto",
 	"assetCount" : "1.3"
 }
 
@@ -61,7 +62,8 @@ or
 {
 	"tradeType": "sell",
 	"assetSymbol" : "BTC",
-	"assetCategory" : "Crypto",
+	"assetName" : "Bitcoin",
+	"assetCategory" : "crypto",
 	"assetCount" : "0.5"
 }
 
@@ -86,14 +88,14 @@ or
 - [x] `/registeration` - POST/register an account
 - [x] `/registeration-random` - POST/register a random account
 - [x] `/login` - POST/handle authentication
+- [x] `/accounts/{id}/update` - POST/update user credentials
 - [x] `/accounts/{id}/deposit` - POST/increase cash balance
 - [x] `/accounts/{id}/withdrawal` - POST/decrease cash balance
-- [x] `/accounts/{id}/update` - POST/update user credentials
-- [x] `/accounts/{id}/reset` - DELETE/reset the user trades and balance
-- [x] `/accounts/{id}/trade/buy` - POST/purchase an asset
-- [x] `/accounts/{id}/trade/sell` - POST/sell an asset
-- [ ] `/accounts/{id}/portfolio` - GET/retrieve user portfolio and balance
-
+- [x] `/accounts/{id}/trade` - POST/purchase an
+- [ ] `/accounts/{id}/reset` - DELETE/reset the user trades and balance
+- [ ] `/accounts/{id}/portfolio` - GET/retrieve user portfolio list
+- [ ] `/accounts/{id}/portfolio-balance` - GET/retrieve user portfolio value
+- [ ] `/accounts/{id}/portfolio-history` - GET/retrieve history of portfolio values 
 ## SQL Database
 
 ### Docker Compose

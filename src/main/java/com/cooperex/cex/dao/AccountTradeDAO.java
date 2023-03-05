@@ -1,8 +1,9 @@
 
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.DatabaseSQLExecutor;
 import com.cooperex.cex.model.AccountTrade;
+import com.cooperex.cex.api.AlphaVantage;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -16,72 +17,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class AccountTradeDAO {
-    private DatabaseSQLExecutor databaseSQLExecutor;
     private Connection connection;
 
     public AccountTradeDAO() {
         System.out.println("AccountTradeDAO object has been initialized with successful DB connection!");
         DatabaseExecutor databaseExecutor = new DatabaseExecutor();
         Connection connection = databaseExecutor.connect();
-        DatabaseSQLExecutor databaseSQLExecutor = new DatabaseSQLExecutor(connection);
-        this.databaseSQLExecutor = databaseSQLExecutor;
         this.connection = connection;
     }
 
     public String tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
         System.out.println("User requests asset " + accountTrade.tradeType);
-        String assetCategory = accountTrade.assetCategory.replace("\"", "");
-        String assetSymbol = accountTrade.assetSymbol.replace("\"", "");
-        String assetName = accountTrade.assetName.replace("\"", "");
-        String tradeType = accountTrade.tradeType.replace("\"", "");
-        double assetCount = Double.parseDouble(accountTrade.assetCount);
+        String assetCategory = accountTrade.getAssetCategory();
+        String assetSymbol = accountTrade.getAssetSymbol();
+        String assetName = accountTrade.getAssetName();
+        String tradeType = accountTrade.getTradeType();
+        double assetCount = accountTrade.getAssetCount();
         double assetPrice = 0;
         double remainingCash = 0;
         double assetTotalValue = 0;
-        String query = null;
+        String query = "";
 
-        // Step 1. Determine API query based on asset type
-        if (assetCategory.equals("crypto")) {
-            String text_1 = "https://alpha-vantage.p.rapidapi.com/query?from_currency=";
-            String text_2 = assetSymbol;
-            String text_3 = "&function=CURRENCY_EXCHANGE_RATE&to_currency=USD";
-            query = text_1 + text_2 + text_3;
-        }
+        // Step 1. Get price based on asset type
+        AlphaVantage alphaVantage = new AlphaVantage();
+        query = alphaVantage.getQueryByAssetCategory(assetCategory, assetSymbol);
+        assetPrice = alphaVantage.getAssetPrice(query, assetCategory);
+        assetTotalValue = assetPrice * assetCount;
 
-        if (assetCategory.equals("stock")) {
-            String text_1 = "https://alpha-vantage.p.rapidapi.com/query?function=GLOBAL_QUOTE&symbol=";
-            String text_2 = assetSymbol;
-            query = text_1 + text_2;
-        }
-
-        // Step 2. Request Alpha Vantage API and parse the price
-        try {
-            HttpResponse<String> response = Unirest.get(query)
-                    .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
-                    .header("X-RapidAPI-Host", "alpha-vantage.p.rapidapi.com")
-                    .asString();
-
-            JSONObject obj = new JSONObject(response.getBody());
-
-            if (assetCategory.equals("crypto")) {
-                assetPrice = Double.parseDouble(obj
-                        .getJSONObject("Realtime Currency Exchange Rate")
-                        .getString("5. Exchange Rate"));
-            }
-
-            if (assetCategory.equals("stock")) {
-                assetPrice = Double.parseDouble(obj
-                        .getJSONObject("Global Quote")
-                        .getString("05. price"));
-            }
-            // Determine the total value of the user's trade
-            assetTotalValue = assetCount * assetPrice;
-
-        } catch (UnirestException e) {
-            return "Unexpected error has occured.";
-        }
-
-        // Step 3. Determine whether user can buy or sell
+        // Step 2. Determine whether user can buy or sell
         // For "buy", check whether user has enough remaining balance
         if (tradeType.equals("buy")) {
             String GET_REMAINING_CASH = "SELECT remaining_cash " +
@@ -126,7 +89,7 @@ public class AccountTradeDAO {
             }
         }
 
-        // Step 4. Prepare SQL statements
+        // Step 3. Prepare SQL statements
         String SQL_1 = null;
         String SQL_2 = null;
         String SQL_3 = null;
@@ -134,16 +97,15 @@ public class AccountTradeDAO {
         String SQL_5 = null;
 
         SQL_1 = "INSERT INTO trades" +
-                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count) VALUES " +
-                " (?, ?, ?, ?, ?, ?)";
+                "  (trade_type, user_id, asset_symbol, asset_name, asset_price, asset_count, asset_category) VALUES " +
+                " (?, ?, ?, ?, ?, ?, ?)";
 
         SQL_2 = "SELECT portfolio_id " +
                 "FROM portfolios WHERE user_id=? and asset_name=?";
 
-
         SQL_4 = "INSERT INTO portfolios" +
-                "  (asset_symbol, user_id, asset_name, asset_count) VALUES " +
-                " (?, ?, ?, ?)";
+                "  (asset_symbol, user_id, asset_name, asset_count, asset_category) VALUES " +
+                " (?, ?, ?, ?, ?)";
 
         if (tradeType.equals("buy")) {
             SQL_3 = "UPDATE portfolios SET " +
@@ -153,7 +115,6 @@ public class AccountTradeDAO {
             SQL_5 = "UPDATE accounts SET " +
                     "remaining_cash = remaining_cash - ? " +
                     "where user_id = ?;";
-
 
         } else {
             SQL_3 = "UPDATE portfolios SET " +
@@ -165,11 +126,7 @@ public class AccountTradeDAO {
                     "where user_id = ?;";
         }
 
-        // Also update the remaining balance
-        // For "sell", increase the remaining balance
-        // For "buy", decrease the reamining balance
-
-        // Step 5. Execute SQL commands
+        // Step 4. Execute SQL commands
         try {
             PreparedStatement statement_1 = this.connection.prepareStatement(SQL_1);
             PreparedStatement statement_2 = this.connection.prepareStatement(SQL_2);
@@ -184,6 +141,7 @@ public class AccountTradeDAO {
             statement_1.setString(4, assetName);
             statement_1.setDouble(5, assetPrice);
             statement_1.setDouble(6, assetCount);
+            statement_1.setString(7, assetCategory);
             statement_1.executeUpdate();
 
             // Get portfolio_id
@@ -207,6 +165,7 @@ public class AccountTradeDAO {
                 statement_4.setInt(2, Integer.parseInt(userId));
                 statement_4.setString(3, assetName);
                 statement_4.setDouble(4, assetCount);
+                statement_4.setString(5, assetCategory);
                 statement_4.executeUpdate();
             }
 
