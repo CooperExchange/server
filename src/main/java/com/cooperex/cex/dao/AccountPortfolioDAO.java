@@ -51,7 +51,7 @@ public class AccountPortfolioDAO {
 
     public double getPortfolioValueById(String userId) {
         // Get user's all assets held
-        String json = getPortfolioById("1");
+        String json = getPortfolioById(userId);
         JSONObject jsonObject = new JSONObject(json);
 
         double portfolioValue = 0;
@@ -74,7 +74,7 @@ public class AccountPortfolioDAO {
             }
         }
 
-        System.out.println("Current portfolio value: " + String.valueOf(portfolioValue));
+        System.out.println("Current asset portfolio value ($): " + String.valueOf(portfolioValue));
         return portfolioValue;
     }
 

@@ -12,10 +12,12 @@
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/dao/AccountTradeDAO.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/Application.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/DatabaseSQLExecutor.java
+/Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/controller/AccountPortfolioController.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/util/DataTransferObject.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/DatabaseExecutor.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/controller/AccountBalanceController.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/model/Register.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/dao/AccountSettingDAO.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/controller/AccountSettingController.java
+/Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/dao/AccountPortfolioDAO.java
 /Users/imac/Desktop/server-main/src/main/java/com/cooperex/cex/model/AccountSetting.java
