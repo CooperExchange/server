@@ -3,9 +3,9 @@ import com.cooperex.cex.DatabaseExecutor;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.*;
-import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.Gson;
+import com.cooperex.cex.api.AlphaVantage;
 
 public class AccountPortfolioDAO {
     private Connection connection;
@@ -21,7 +21,7 @@ public class AccountPortfolioDAO {
     public String getPortfolioById(String userId) {
         // Step 1. Calculate Networth
         // Use user_id to get current asset counts for each
-        String SQL = "SELECT asset_name, asset_symbol, asset_count " +
+        String SQL = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
                 "FROM portfolios WHERE user_id=?";
         Map<Integer, Map<String, String>> portfolioDict = new HashMap<>();
 
@@ -32,12 +32,10 @@ public class AccountPortfolioDAO {
             int count = 1;
             while (rs.next()) {
                 Map<String, String> assetDict = new HashMap<>();
-                String assetName = rs.getString("asset_name");
-                String assetSymbol = rs.getString("asset_symbol");
-                Double assetCount = rs.getDouble("asset_count");
-                assetDict.put("assetName", String.valueOf(assetName));
-                assetDict.put("assetSymbol", assetSymbol);
-                assetDict.put("assetCount", String.valueOf(assetCount));
+                assetDict.put("assetName", rs.getString("asset_name"));
+                assetDict.put("assetSymbol", rs.getString("asset_symbol"));
+                assetDict.put("assetCategory", rs.getString("asset_category"));
+                assetDict.put("assetCount", String.valueOf(rs.getDouble("asset_count")));
                 portfolioDict.put(count, assetDict);
                 count += 1;
             }
@@ -52,11 +50,32 @@ public class AccountPortfolioDAO {
     }
 
     public double getPortfolioValueById(String userId) {
-        System.out.println("");
-        // Apply a different Query for stocks/crypto
+        // Get user's all assets held
+        String json = getPortfolioById("1");
+        JSONObject jsonObject = new JSONObject(json);
 
+        double portfolioValue = 0;
+        Iterator<String> keys = jsonObject.keys();
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if (jsonObject.get(key) instanceof JSONObject) {
+                // do something with jsonObject here
+                System.out.println(key);
+                String assetSymbol = jsonObject.getJSONObject(key).getString("assetSymbol");
+                String assetCategory = jsonObject.getJSONObject(key).getString("assetCategory");
+                double assetCount = Double.parseDouble(jsonObject.getJSONObject(key).getString("assetCount"));
 
-        return 10000;
+                // Use Alpha Vantage get the price of each asset owned
+                AlphaVantage alphaVantage = new AlphaVantage();
+                String query = alphaVantage.getQueryByAssetCategory(assetCategory, assetSymbol);
+                double assetPrice = alphaVantage.getAssetPrice(query, assetCategory);
+                double totalPrice = assetCount * assetPrice;
+                portfolioValue += (assetCount * assetPrice);
+            }
+        }
+
+        System.out.println("Current portfolio value: " + String.valueOf(portfolioValue));
+        return portfolioValue;
     }
 
 }

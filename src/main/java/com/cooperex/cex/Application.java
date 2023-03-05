@@ -9,7 +9,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
-		accountPortfolioDAO.getPortfolioValueById("4");
+		accountPortfolioDAO.getPortfolioValueById("1");
 	}
 }
 
