@@ -1,4 +1,5 @@
 import requests
+import json
 
 def makeAccount():
     firstName = input("What is your First Name?\n")
@@ -75,6 +76,19 @@ def trade(user_id, tradeType, assetSymbol, assetName, assetCount, assetCategory)
     if r.status_code != 200:
         print(f"{r.reason} Status: {r.status_code}")
 
+def portfolio(user_id):
+    headers = {'Accept': 'application/json'}
+    r = requests.get(f'http://localhost:8080/accounts/{user_id}/portfolio', headers=headers)
+
+    parsed_json = json.loads((r.content).decode("utf-8"))
+    formatted_json = json.dumps(parsed_json, indent=4)
+
+    with open("portfolio.txt", "w") as outfile:
+        outfile.write(formatted_json)
+    
+    if r.status_code != 200:
+        print(f"{r.reason} Status: {r.status_code}")
+
 action = input("Select Option: \n> Make Account\n> Login\n")
 match action:
     case "Make Account":
@@ -82,7 +96,7 @@ match action:
     case "Login":
         user_id = login().decode("utf-8")
         while True:
-            account_action = input("Select Option:\n> Update Account Settings\n> Deposit\n> Withdrawal\n> Trade\n> Logout\n")
+            account_action = input("Select Option:\n> Update Account Settings\n> Deposit\n> Withdrawal\n> Portfolio\n> Trade\n> Logout\n")
             match account_action:
                 case "Update Account Settings":
                     updateAccount(user_id)
@@ -92,6 +106,8 @@ match action:
                 case "Withdrawal":
                     amount = input("How much would you like to withdraw?\n")
                     withdrawal(user_id, amount)
+                case "Portfolio":
+                    portfolio(user_id)
                 case "Trade":
                     tradeType = input("Trade Type (Buy or Sell): ")
                     assetCategory = input("Category: ")
