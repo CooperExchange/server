@@ -4,7 +4,7 @@
 $ docker run --rm --name lil-postgres -e POSTGRES_PASSWORD=password -d -v $HOME/srv/postgres:/var/lib/postgresql/data -p 5432:5432 postgres
 $ mvn package && java -jar target/cex-0.0.1-SNAPSHOT-spring-boot.jar
 ```
-
+Make sure to separately run the database server (see database README) in another terminal window to make sure both servers can communicate with each other if using the above method instead of the ```docker compose``` method below
 
 ## API Endpoint Examples for Demo
 
@@ -99,6 +99,8 @@ or
 ## SQL Database
 
 ### Docker Compose
+In ```/server/src/main/java/com/cooperex/cex/DatabaseExecutor.java``` change ```"localhost"``` to ```"db"``` before running the ```docker compose``` commands
+
 ```agsl
 $ docker compose build
 $ docker compose up
