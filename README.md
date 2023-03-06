@@ -99,6 +99,8 @@ or
 ## SQL Database
 
 ### Docker Compose
+In ```/server/src/main/java/com/cooperex/cex/DatabaseExecutor.java``` change ```"localhost"``` to ```"db"``` before running the ```docker compose``` commands
+
 ```agsl
 $ docker compose build
 $ docker compose up
