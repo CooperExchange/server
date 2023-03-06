@@ -18,32 +18,32 @@ public class AccountPortfolioDAO {
     }
 
     // Retrieve
-    public String getPortfolioById(String userId) {
-        // Step 1. Calculate Networth
-        // Use user_id to get current asset counts for each
-        String SQL = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
-                "FROM portfolios WHERE user_id=?";
-        Map<Integer, Map<String, String>> portfolioDict = new HashMap<>();
+    public
+        String getPortfolioById(String userId) {
+            // Step 1. Calculate Networth
+            // Use user_id to get current asset counts for each
+            String SQL = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
+                    "FROM portfolios WHERE user_id=?";
+            Map<Integer, Map<String, String>> portfolioDict = new HashMap<>();
 
-        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setInt(1, Integer.parseInt(userId));
-            ResultSet rs = statement.executeQuery();
+            try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
+                statement.setInt(1, Integer.parseInt(userId));
+                ResultSet rs = statement.executeQuery();
 
-            int count = 1;
-            while (rs.next()) {
-                Map<String, String> assetDict = new HashMap<>();
-                assetDict.put("assetName", rs.getString("asset_name"));
-                assetDict.put("assetSymbol", rs.getString("asset_symbol"));
-                assetDict.put("assetCategory", rs.getString("asset_category"));
-                assetDict.put("assetCount", String.valueOf(rs.getDouble("asset_count")));
-                portfolioDict.put(count, assetDict);
-                count += 1;
+                int count = 1;
+                while (rs.next()) {
+                    Map<String, String> assetDict = new HashMap<>();
+                    assetDict.put("assetName", rs.getString("asset_name"));
+                    assetDict.put("assetSymbol", rs.getString("asset_symbol"));
+                    assetDict.put("assetCategory", rs.getString("asset_category"));
+                    assetDict.put("assetCount", String.valueOf(rs.getDouble("asset_count")));
+                    portfolioDict.put(count, assetDict);
+                    count += 1;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return "Unexpected error has occurred.";
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Unexpected error has occured.";
-        }
-
         Gson gson = new Gson();
         String json = gson.toJson(portfolioDict);
         return json;
