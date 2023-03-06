@@ -22,6 +22,6 @@ public class AccountTradeTest {
         Assertions.assertSame(assetCategory, accountTrade.getAssetCategory());
         Assertions.assertSame(assetSymbol, accountTrade.getAssetSymbol());
         Assertions.assertSame(assetName, accountTrade.getAssetName());
-
+        Assertions.assertEquals(4.0, accountTrade.getAssetCount());
     }
 }
