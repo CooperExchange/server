@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 
 public class CoinMarketCap {
     public CoinMarketCap() {
-        System.out.println("CMC API initailized");
+        System.out.println("CMC initailized");
     }
 
     public Map<String, Double> getCryptoPriceDict(String[] symbols) {
@@ -47,6 +47,7 @@ public class CoinMarketCap {
                 double cryptoPrice = jsonObject.getJSONObject("quote").getJSONObject("USD").getDouble("price");
                 cryptoPriceDict.put(symbol, cryptoPrice);
             }
+
             return cryptoPriceDict;
         } catch (UnirestException e) {
             return null;

@@ -76,11 +76,16 @@ public class AccountPortfolioDAO {
 
         // Step 4. Get stock prices from Yahoo
         YahooFinance yahooFinance = new YahooFinance();
-        yahooFinance.getStockPriceDict();
-//        System.out.println(Arrays.toString(stockSymbols));
+        Map<String, Double> stockPriceDict = yahooFinance.getStockPriceDict(stockSymbols);
+        System.out.println(stockPriceDict);
+        stockDict.forEach((k, v) -> stockDict
+                .get(k).put("assetPrice", String.valueOf(stockPriceDict.get(k))));
 
         Gson gson = new Gson();
-        String json = gson.toJson(crpytoDict);
+        String stockJson = gson.toJson(stockDict);
+        String cryptoJson = gson.toJson(crpytoDict);
+
+        String json = stockJson + cryptoJson;
         System.out.println(json);
         return json;
     }

@@ -3,8 +3,12 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import java.util.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.apache.commons.lang3.StringUtils;
+import com.google.gson.Gson;
 
 public class YahooFinance {
 
@@ -12,34 +16,39 @@ public class YahooFinance {
         System.out.println("YahooFinance API initailized");
     }
 
-    public String getStockPriceDict() {
+    public Map<String, Double> getStockPriceDict(String[] symbols) {
 
-        String query = null;
+        String searchQuery = "";
+        Map<String, Double> stockPriceDict = new HashMap();
 
-        if (assetCategory.equals("stock")) {
-            String text_1 = "https://alpha-vantage.p.rapidapi.com/query?function=GLOBAL_QUOTE&symbol=";
-            String text_2 = assetSymbol;
-            query = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/AAPL,MSFT"
+        for (int i = 0; i < symbols.length; i++) {
+            String symbol = symbols[i];
+            searchQuery += (symbol + ",");
         }
-        double assetPrice = 0;
+
+
+        String uri = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/" + searchQuery;
 
         try {
-            HttpResponse<String> response = Unirest.get(query)
-                    .header("X-RapidAPI-Key", "5bd3cb0dc4msh1e1a7d40884cf61p1c068cjsn93ab111ba186")
+            HttpResponse<String> response = Unirest.get(uri)
+                    .header("X-RapidAPI-Key", "0d817a0363mshb238e20933c8a93p16dd6fjsnc3470d352257")
                     .header("X-RapidAPI-Host", "yahoo-finance15.p.rapidapi.com")
                     .asString();
 
-            JSONObject obj = new JSONObject(response.getBody());
-//            assetPrice = Double.parseDouble(obj
-//                        .getJSONObject("Global Quote")
-//                        .getString("05. price"));
-            System.out.println(obj);
+            JSONArray array = new JSONArray(response.getBody());
 
-            return "hello";
+            for (int i = 0; i < symbols.length; i++) {
+                double stockPrice = array.getJSONObject(i).getDouble("regularMarketPrice");
+                String symbol = array.getJSONObject(i).getString("symbol");
+                stockPriceDict.put(symbol, stockPrice);
+            }
+
+            return stockPriceDict;
         } catch (UnirestException e) {
-            return "hellow";
+            return null;
         }
     }
+
 
 }
 
