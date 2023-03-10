@@ -66,22 +66,24 @@ public class AccountPortfolioDAO {
         cryptoSymbols = cryptoSymbolList.toArray(cryptoSymbols);
         stockSymbols = stockSymbolList.toArray(stockSymbols);
 
+        // Step 3. Get crypto prices from CoinMarketCap
+        System.out.println();
+        if (cryptoSymbols.length != 0) {
+            CoinMarketCap coinMarketCap = new CoinMarketCap();
+            Map<String, Double> cryptoPriceDict = coinMarketCap.getCryptoPriceDict(cryptoSymbols);
+            crpytoDict.forEach((k, v) -> crpytoDict
+                    .get(k).put("assetPrice", String.valueOf(cryptoPriceDict.get(k))));
+        }
 
-        // Step 3. Get crypto prices from CMC
-        CoinMarketCap coinMarketCap = new CoinMarketCap();
-        Map<String, Double> cryptoPriceDict = coinMarketCap.getCryptoPriceDict(cryptoSymbols);
-        crpytoDict.forEach((k, v) -> crpytoDict
-                .get(k).put("assetPrice", String.valueOf(cryptoPriceDict.get(k))));
+        // Step 4. Get stock prices from Yahoo Finance
+        if (stockSymbols.length != 0) {
+            YahooFinance yahooFinance = new YahooFinance();
+            Map<String, Double> stockPriceDict = yahooFinance.getStockPriceDict(stockSymbols);
+            stockDict.forEach((k, v) -> stockDict
+                    .get(k).put("assetPrice", String.valueOf(stockPriceDict.get(k))));
+        }
 
-
-        // Step 4. Get stock prices from Yahoo
-        YahooFinance yahooFinance = new YahooFinance();
-        Map<String, Double> stockPriceDict = yahooFinance.getStockPriceDict(stockSymbols);
-        stockDict.forEach((k, v) -> stockDict
-                .get(k).put("assetPrice", String.valueOf(stockPriceDict.get(k))));
-
-
-        // Step 5. Combine the dictionaries
+        // Step 5. Combine the crypto and stock dictionaries
         Map<String, Map<String, String>> assetDict = new HashMap<>();
         assetDict.putAll(stockDict);
         assetDict.putAll(crpytoDict);

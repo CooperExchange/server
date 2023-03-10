@@ -27,7 +27,7 @@ public class AccountTradeDAO {
     }
 
     public String tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
-        System.out.println("User requests asset " + accountTrade.tradeType);
+        System.out.println("User requests asset " + accountTrade.getTradeType());
         String assetCategory = accountTrade.getAssetCategory();
         String assetSymbol = accountTrade.getAssetSymbol();
         String assetName = accountTrade.getAssetName();
