@@ -26,7 +26,6 @@ public class YahooFinance {
             searchQuery += (symbol + ",");
         }
 
-
         String uri = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/" + searchQuery;
 
         try {
