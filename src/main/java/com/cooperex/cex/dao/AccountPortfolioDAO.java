@@ -77,16 +77,19 @@ public class AccountPortfolioDAO {
         // Step 4. Get stock prices from Yahoo
         YahooFinance yahooFinance = new YahooFinance();
         Map<String, Double> stockPriceDict = yahooFinance.getStockPriceDict(stockSymbols);
-        System.out.println(stockPriceDict);
         stockDict.forEach((k, v) -> stockDict
                 .get(k).put("assetPrice", String.valueOf(stockPriceDict.get(k))));
 
-        Gson gson = new Gson();
-        String stockJson = gson.toJson(stockDict);
-        String cryptoJson = gson.toJson(crpytoDict);
 
-        String json = stockJson + cryptoJson;
-        System.out.println(json);
-        return json;
+        // Step 5. Combine the dictionaries
+        Map<String, Map<String, String>> assetDict = new HashMap<>();
+        assetDict.putAll(stockDict);
+        assetDict.putAll(crpytoDict);
+        Gson gson = new Gson();
+        String assetJson = gson.toJson(assetDict);
+        System.out.println(assetJson);
+        return assetJson;
     }
 }
+
+// Bug 1: Must check whether the user exists in the first place

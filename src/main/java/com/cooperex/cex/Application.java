@@ -8,7 +8,7 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
-		accountPortfolioDAO.getPortfolioById("3");
+		accountPortfolioDAO.getPortfolioById("1");
 	}
 }
 
