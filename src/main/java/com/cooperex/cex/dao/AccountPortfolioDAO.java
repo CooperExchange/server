@@ -19,9 +19,6 @@ public class AccountPortfolioDAO {
     }
 
     public String getPortfolioById(String userId) {
-
-
-
         // Step 1. Retrieve assets held by the user
         String SQL = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
                 "FROM portfolios WHERE user_id=?";
@@ -89,9 +86,40 @@ public class AccountPortfolioDAO {
         assetDict.putAll(crpytoDict);
         Gson gson = new Gson();
         String assetJson = gson.toJson(assetDict);
-        System.out.println(assetJson);
         return assetJson;
     }
-}
 
-// Bug 1: Must check whether the user exists in the first place
+    public double getPortfolioValueById(String userId) {
+        // Step 1. Determine the remaining cash
+        String GET_REMAINING_CASH = "SELECT remaining_cash " +
+                "FROM accounts WHERE user_id=?";
+        double asset_total_value = 0;
+
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_REMAINING_CASH);) {
+            statement.setInt(1, Integer.parseInt(userId));
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                asset_total_value += rs.getDouble("remaining_cash");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Step 2. Determine the valuation of the stocks/cryptos
+        AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
+        String json = accountPortfolioDAO.getPortfolioById(userId);
+        JSONObject jsonObject = new JSONObject(json);
+        Iterator<String> keys = jsonObject.keys();
+
+        while(keys.hasNext()) {
+            String key = keys.next();
+            if (jsonObject.get(key) instanceof JSONObject) {
+                // do something with jsonObject here
+                double assetPrice = Double.valueOf(jsonObject.getJSONObject(key).getString("assetPrice"));
+                double assetCount = Double.valueOf(jsonObject.getJSONObject(key).getString("assetCount"));
+                asset_total_value += (assetPrice * assetCount);
+            }
+        }
+        return asset_total_value;
+    }
+}

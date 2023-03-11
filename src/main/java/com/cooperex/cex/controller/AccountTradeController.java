@@ -2,7 +2,6 @@ package com.cooperex.cex.controller;
 import com.cooperex.cex.dao.AccountTradeDAO;
 import com.cooperex.cex.model.AccountTrade;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/accounts")
 public class AccountTradeController {
