@@ -20,9 +20,28 @@ public class AccountPortfolioHistoryDAO {
         this.connection = connection;
     }
 
-    public String getPortfolioHistoryById(String userId) {
+    public String savePortfolioHistoryById(String userId) {
+        System.out.println("We are going to save portfolio history");
+        // Step 1. Retrieve the value of the portfolio net-worth
+        AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
+        double portfolio_value = accountPortfolioDAO.getPortfolioValueById(userId);
 
-       return "Portfolio History is working";
+        String SQL = "INSERT INTO portfolio_history" +
+                "  (user_id, portfolio_value) VALUES " +
+                " (?, ?)";
+        try (PreparedStatement statement = this.connection.prepareStatement(SQL)) {
+            statement.setInt(1, Integer.parseInt(userId));
+            statement.setDouble(2, portfolio_value);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Step 2. Insert the table
+        return "Portfolio history saved";
+    }
+    public String getPortfolioHistoryById(String userId) {
+        return "Portfolio history retrievde";
     }
 }
 
