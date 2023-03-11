@@ -22,6 +22,7 @@ public class AccountPortfolioHistoryDAO {
 
     public String savePortfolioHistoryById(String userId) {
         System.out.println("We are going to save portfolio history");
+
         // Step 1. Retrieve the value of the portfolio net-worth
         AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
         double portfolio_value = accountPortfolioDAO.getPortfolioValueById(userId);
@@ -37,11 +38,34 @@ public class AccountPortfolioHistoryDAO {
             e.printStackTrace();
         }
 
-        // Step 2. Insert the table
         return "Portfolio history saved";
     }
     public String getPortfolioHistoryById(String userId) {
-        return "Portfolio history retrievde";
+
+        Map<String, Double> portfolioHistoryDict = new HashMap<>();
+        // Step 1. Retrieve all the portfolio data.
+        String SQL = "SELECT portfolio_value, date_balance " +
+                "FROM portfolio_history WHERE user_id=?";
+
+        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
+            statement.setInt(1, Integer.parseInt(userId));
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Double portfolio_value = rs.getDouble("portfolio_value");
+                String date = rs.getString("date_balance");
+                portfolioHistoryDict.put(date, portfolio_value);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        Gson gson = new Gson();
+        String json = gson.toJson(portfolioHistoryDict);
+        System.out.println(json);
+
+        // Step 2. Filter out the highest value during the period.
+        // Step 3. Return as a JSON file.
+        return json;
     }
 }
 

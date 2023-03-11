@@ -10,6 +10,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 		AccountPortfolioHistoryDAO accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
 		accountPortfolioHistoryDAO.savePortfolioHistoryById("1");
+		accountPortfolioHistoryDAO.getPortfolioHistoryById("1");
 
 	}
 }
