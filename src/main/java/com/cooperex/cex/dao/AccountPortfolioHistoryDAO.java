@@ -63,8 +63,7 @@ public class AccountPortfolioHistoryDAO {
         String json = gson.toJson(portfolioHistoryDict);
         System.out.println(json);
 
-        // Step 2. Filter out the highest value during the period.
-        // Step 3. Return as a JSON file.
+        // Step 2. Return as a JSON format.
         return json;
     }
 }
