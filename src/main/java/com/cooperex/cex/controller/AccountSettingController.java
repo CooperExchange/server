@@ -19,9 +19,9 @@ public class AccountSettingController {
         return accountSettingDAO.updateAccountInfoById(userId, accountSetting);
     }
 
-    @DeleteMapping(path="/{userId}/rest")
-    public String resetAccount(@PathVariable String userId) {
-        return accountSettingDAO.resetAccountById(userId);
-    }
+//    @DeleteMapping(path="/{userId}/rest")
+//    public String resetAccount(@PathVariable String userId) {
+//        return accountSettingDAO.resetAccountById(userId);
+//    }
 
 }

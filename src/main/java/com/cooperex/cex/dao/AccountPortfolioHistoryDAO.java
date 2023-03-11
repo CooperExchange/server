@@ -63,7 +63,7 @@ public class AccountPortfolioHistoryDAO {
         String json = gson.toJson(portfolioHistoryDict);
         System.out.println(json);
 
-        // Step 2. Return as a JSON format.
+        // Step 2. Return as a JSON file.
         return json;
     }
 }

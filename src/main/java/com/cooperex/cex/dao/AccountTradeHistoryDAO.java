@@ -23,18 +23,12 @@ public class AccountTradeHistoryDAO {
     }
 
     public String getTradeHistoryById(String userId) {
-        Map<String, JSONObject> tradeHistoryDict = new HashMap<>();
+
         // Step 1. Retrieve all the portfolio data.
         String SQL = "SELECT trade_type, trade_date, asset_symbol, asset_name, asset_category, asset_count, total_price " +
                 "FROM trades WHERE user_id=?";
 
         JSONObject tradeJson = new JSONObject();
-
-//        assetDict.putAll(stockDict);
-//        assetDict.putAll(crpytoDict);
-//        Gson gson = new Gson();
-//        String assetJson = gson.toJson(assetDict);
-//        return assetJson;
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setInt(1, Integer.parseInt(userId));
             ResultSet rs = statement.executeQuery();
@@ -56,23 +50,6 @@ public class AccountTradeHistoryDAO {
             e.printStackTrace();
         }
 
-        System.out.println(tradeJson);
-//        Map<String, Map<String, T>> assetDict = new HashMap<>();
-//        assetDict.putAll(stockDict);
-//        assetDict.putAll(crpytoDict);
-
-        System.out.println(tradeHistoryDict);
-
-//        Gson gson = new Gson();
-//        String json = gson.toJson(portfolioHistoryDict);
-//        System.out.println(json);
-//
-//        // Step 2. Return as a JSON format.
-//        return json;
-        return "Hello";
+        return tradeJson.toString();
     }
 }
-
-
-
-// Bug 1: Must check whether the user exists in the first place

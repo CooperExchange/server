@@ -40,24 +40,24 @@ public class AccountSettingDAO {
         return "User info has been updated";
     }
 
-    public String resetAccountById(String userId) {
-        // Reset user information
-        System.out.println("User requests account reset");
-        String SQL = "update accounts set " +
-                "total_deposit = ?, total_withdrawal = ? " +
-                "where user_id = ?;";
-        int userIdInt = Integer.parseInt(userId);
-        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setDouble(1, 0);
-            statement.setDouble(2, 0);
-            statement.setInt(3, userIdInt);
-            statement.executeUpdate();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "called resetAccountById";
-    }
+//    public String resetAccountById(String userId) {
+//        // Reset user information
+//        System.out.println("User requests account reset");
+//        String SQL = "update accounts set " +
+//                "total_deposit = ?, total_withdrawal = ? " +
+//                "where user_id = ?;";
+//        int userIdInt = Integer.parseInt(userId);
+//        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
+//            statement.setDouble(1, 0);
+//            statement.setDouble(2, 0);
+//            statement.setInt(3, userIdInt);
+//            statement.executeUpdate();
+//            statement.close();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return "called resetAccountById";
+//    }
 }
 
 
