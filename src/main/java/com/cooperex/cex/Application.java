@@ -1,19 +1,15 @@
 package com.cooperex.cex;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import com.cooperex.cex.dao.AccountPortfolioDAO;
-import com.cooperex.cex.dao.AccountPortfolioHistoryDAO;
-import com.cooperex.cex.dao.AccountTradeHistoryDAO;
+import com.cooperex.cex.dao.AccountProfileDAO;
 
 @SpringBootApplication
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-//		AccountPortfolioHistoryDAO accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
-//		AccountTradeHistoryDAO accountTradeHistoryDAO = new AccountTradeHistoryDAO();
-//		accountPortfolioHistoryDAO.savePortfolioHistoryById("1");
-//		accountPortfolioHistoryDAO.getPortfolioHistoryById("1");
-//		accountTradeHistoryDAO.getTradeHistoryById("1");
+		AccountProfileDAO accountProfileDAO = new AccountProfileDAO();
+		String value = accountProfileDAO.getAccountProfileById("4");
+		System.out.println(value);
 	}
 }
 
