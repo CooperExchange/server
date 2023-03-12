@@ -2,10 +2,8 @@ package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
 import com.cooperex.cex.DatabaseSQLExecutor;
 import com.cooperex.cex.model.Login;
-
 import java.sql.ResultSet;
 import java.sql.*;
-
 
 public class LoginDAO {
     private DatabaseSQLExecutor databaseSQLExecutor;
@@ -23,19 +21,20 @@ public class LoginDAO {
     public String returnUserId(Login login) {
         String SQL = "SELECT user_id, username, pass_word " +
                 "FROM accounts WHERE email=? and pass_word=?";
-
+        String userId = null;
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setString(1, login.getEmail());
             statement.setString(2, login.getPassword());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                String userId = Long.toString(rs.getLong("user_id"));
-                return userId;
+                userId = Long.toString(rs.getLong("user_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "No matching record was found. Please check your email or password";
+
+        return userId;
+
     }
 }
 

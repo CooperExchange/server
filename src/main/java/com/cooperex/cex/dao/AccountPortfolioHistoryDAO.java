@@ -30,6 +30,7 @@ public class AccountPortfolioHistoryDAO {
         String SQL = "INSERT INTO portfolio_history" +
                 "  (user_id, portfolio_value) VALUES " +
                 " (?, ?)";
+
         try (PreparedStatement statement = this.connection.prepareStatement(SQL)) {
             statement.setInt(1, Integer.parseInt(userId));
             statement.setDouble(2, portfolio_value);
