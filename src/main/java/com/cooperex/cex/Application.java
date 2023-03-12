@@ -9,11 +9,11 @@ import com.cooperex.cex.dao.AccountTradeHistoryDAO;
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-		AccountPortfolioHistoryDAO accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
-		AccountTradeHistoryDAO accountTradeHistoryDAO = new AccountTradeHistoryDAO();
-		accountPortfolioHistoryDAO.savePortfolioHistoryById("1");
-		accountPortfolioHistoryDAO.getPortfolioHistoryById("1");
-		accountTradeHistoryDAO.getTradeHistoryById("1");
+//		AccountPortfolioHistoryDAO accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
+//		AccountTradeHistoryDAO accountTradeHistoryDAO = new AccountTradeHistoryDAO();
+//		accountPortfolioHistoryDAO.savePortfolioHistoryById("1");
+//		accountPortfolioHistoryDAO.getPortfolioHistoryById("1");
+//		accountTradeHistoryDAO.getTradeHistoryById("1");
 	}
 }
 

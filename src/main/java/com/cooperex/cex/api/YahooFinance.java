@@ -29,6 +29,7 @@ public class YahooFinance {
         String uri = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/" + searchQuery;
 
         try {
+            System.out.print("Yahoo Finance API called");
             HttpResponse<String> response = Unirest.get(uri)
                     .header("X-RapidAPI-Key", "0d817a0363mshb238e20933c8a93p16dd6fjsnc3470d352257")
                     .header("X-RapidAPI-Host", "yahoo-finance15.p.rapidapi.com")

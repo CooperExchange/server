@@ -17,26 +17,30 @@ public class AccountBalanceDAO {
         this.connection = connection;
     }
 
-    public String addBalanceById(String userId, Double amount) {
+    public boolean addBalanceById(String userId, Double amount) {
+
+        if (amount <= 0) {
+            return false;
+        }
+
         String UPDATE_TOTAL_DEPOSIT = "UPDATE accounts SET total_deposit " +
                 "= total_deposit + ?,  remaining_cash = remaining_cash + ? where user_id = ?;";
-
-        int userIdInt = Integer.parseInt(userId);
 
         try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_TOTAL_DEPOSIT);) {
             statement.setDouble(1, amount);
             statement.setDouble(2, amount);
-            statement.setInt(3, userIdInt);
+            statement.setInt(3, Integer.parseInt(userId));
             statement.executeUpdate();
             statement.close();
+            return true;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return "User deposit has been increased by " + amount.toString();
     }
 
-    public String withdrawBalanceById(String userId, Double amount) {
+    public boolean withdrawBalanceById(String userId, Double amount) {
         String GET_REMAINING_CASH = "SELECT remaining_cash " +
                 "FROM accounts WHERE user_id=?";
 
@@ -54,24 +58,23 @@ public class AccountBalanceDAO {
 
         // Prevent overdraft
         if (remainingCash < amount) {
-            return "User failed to withdraw. Please check the remaining balance.";
+            return false;
         }
 
         String UPDATE_REMAINING_CASH = "UPDATE accounts SET total_withdrawal " +
                 "= total_withdrawal + ?, remaining_cash = remaining_cash - ? where user_id = ?";
 
-        int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_REMAINING_CASH);) {
             statement.setDouble(1, amount);
             statement.setDouble(2, amount);
-            statement.setInt(3, userIdInt);
+            statement.setInt(3, Integer.parseInt(userId));
             statement.executeUpdate();
             statement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "User withdrawal has been increased by " + amount.toString();
+        return true;
     }
 
 }

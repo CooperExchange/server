@@ -18,7 +18,7 @@ public class LoginDAO {
         this.connection = connection;
     }
 
-    public String returnUserId(Login login) {
+    public String getUserIdByEmailAndPassword(Login login) {
         String SQL = "SELECT user_id, username, pass_word " +
                 "FROM accounts WHERE email=? and pass_word=?";
         String userId = null;
@@ -34,7 +34,6 @@ public class LoginDAO {
         }
 
         return userId;
-
     }
 }
 

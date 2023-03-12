@@ -31,10 +31,11 @@ public class CoinMarketCap {
         String APIKey = "06e9d858-d7c0-479d-93fc-672bc5937895";
         String uri = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol=" + searchQuery;
 
-        // Step 3. Price crypto prices Query CMC  symbols
+        // Step 3. Price crypto prices Query CMC symbols
         Map<String, Double> cryptoPriceDict = new HashMap();
 
         try {
+            System.out.print("CMC API called");
             HttpResponse<String> response = Unirest.get(uri)
                     .header("X-CMC_PRO_API_KEY", APIKey)
                     .asString();
@@ -46,17 +47,13 @@ public class CoinMarketCap {
                 String symbol = jsonObject.getString("symbol");
                 double cryptoPrice = jsonObject.getJSONObject("quote").getJSONObject("USD").getDouble("price");
                 cryptoPriceDict.put(symbol, cryptoPrice);
-            }
 
+            }
             return cryptoPriceDict;
         } catch (UnirestException e) {
             return null;
         }
-
     }
-
-
-
 }
 
 

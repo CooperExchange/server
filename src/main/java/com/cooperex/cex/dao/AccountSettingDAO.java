@@ -17,7 +17,7 @@ public class AccountSettingDAO {
     }
 
     // To-do: Implement error handling for username and email duplicates
-    public String updateAccountInfoById(String userId, AccountSetting accountSetting) {
+    public boolean updateAccountInfoById(String userId, AccountSetting accountSetting) {
 
         // Create an account
         String SQL = "UPDATE accounts set " +
@@ -36,8 +36,9 @@ public class AccountSettingDAO {
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return "User info has been updated";
+        return true;
     }
 
 //    public String resetAccountById(String userId) {

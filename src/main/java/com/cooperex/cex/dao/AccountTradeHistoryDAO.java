@@ -25,20 +25,21 @@ public class AccountTradeHistoryDAO {
     public String getTradeHistoryById(String userId) {
 
         // Step 1. Retrieve all the portfolio data.
-        String SQL = "SELECT trade_type, trade_date, asset_symbol, asset_name, asset_category, asset_count, total_price " +
+        String SQL = "SELECT trade_type, trade_date, asset_symbol, asset_name, asset_category, asset_price, asset_count, total_price " +
                 "FROM trades WHERE user_id=?";
 
         JSONObject tradeJson = new JSONObject();
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setInt(1, Integer.parseInt(userId));
             ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) {;
                 AccountTrade accountTrade = new AccountTrade();
                 accountTrade.setTradeType(rs.getString("trade_type"));
                 accountTrade.setAssetSymbol(rs.getString("asset_symbol"));
                 accountTrade.setAssetName(rs.getString("asset_name"));
                 accountTrade.setAssetCategory(rs.getString("asset_category"));
                 accountTrade.setAssetCount(rs.getDouble("asset_count"));
+                accountTrade.setAssetPrice(rs.getDouble("asset_price"));
                 accountTrade.setTotalPrice(rs.getDouble("total_price"));
                 String tradeDate = rs.getString("trade_date");
                 Gson gson = new Gson();
@@ -48,6 +49,7 @@ public class AccountTradeHistoryDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
 
         return tradeJson.toString();

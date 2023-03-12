@@ -4,6 +4,7 @@ import com.cooperex.cex.dao.RegisterDAO;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 public class RegisterController {
@@ -15,14 +16,22 @@ public class RegisterController {
     }
 
     @PostMapping("/registration")
-    public String createAccount(@RequestBody Register account) {
-        return registerDAO.createAccount(account);
+    public ResponseEntity<String> createAccount(@RequestBody Register account) {
+        if (registerDAO.createAccount(account)) {
+            return ResponseEntity.ok("An acccount has been succesfully created.");
+        }
+        return ResponseEntity.badRequest()
+                .body("The username or email has been taken.");
     }
 
     @PostMapping("/registration-random")
-    public String createRandomAccount() {
-        return registerDAO.createRandomAccount();
-    }
+    public ResponseEntity<String> createRandomAccount() {
+        if (registerDAO.createRandomAccount()) {
+            return ResponseEntity.ok("A random account has been succesfully created.");
+        }
+        return ResponseEntity.badRequest()
+                .body("The username or email has been taken.");
 
+    }
 }
 

@@ -64,7 +64,6 @@ public class AccountPortfolioDAO {
         stockSymbols = stockSymbolList.toArray(stockSymbols);
 
         // Step 3. Get crypto prices from CoinMarketCap
-        System.out.println();
         if (cryptoSymbols.length != 0) {
             CoinMarketCap coinMarketCap = new CoinMarketCap();
             Map<String, Double> cryptoPriceDict = coinMarketCap.getCryptoPriceDict(cryptoSymbols);
@@ -89,17 +88,18 @@ public class AccountPortfolioDAO {
         return assetJson;
     }
 
+
     public double getPortfolioValueById(String userId) {
         // Step 1. Determine the remaining cash
         String GET_REMAINING_CASH = "SELECT remaining_cash " +
                 "FROM accounts WHERE user_id=?";
-        double asset_total_value = 0;
+        double portfolio_total_value = 0;
 
         try (PreparedStatement statement = this.connection.prepareStatement(GET_REMAINING_CASH);) {
             statement.setInt(1, Integer.parseInt(userId));
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                asset_total_value += rs.getDouble("remaining_cash");
+                portfolio_total_value += rs.getDouble("remaining_cash");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,9 +117,9 @@ public class AccountPortfolioDAO {
                 // do something with jsonObject here
                 double assetPrice = Double.valueOf(jsonObject.getJSONObject(key).getString("assetPrice"));
                 double assetCount = Double.valueOf(jsonObject.getJSONObject(key).getString("assetCount"));
-                asset_total_value += (assetPrice * assetCount);
+                portfolio_total_value += (assetPrice * assetCount);
             }
         }
-        return asset_total_value;
+        return portfolio_total_value;
     }
 }

@@ -20,26 +20,40 @@ public class AccountPortfolioHistoryDAO {
         this.connection = connection;
     }
 
-    public String savePortfolioHistoryById(String userId) {
-        System.out.println("We are going to save portfolio history");
+    public Boolean savePortfolioValueById(String userId) {
 
         // Step 1. Retrieve the value of the portfolio net-worth
         AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
         double portfolio_value = accountPortfolioDAO.getPortfolioValueById(userId);
 
-        String SQL = "INSERT INTO portfolio_history" +
-                "  (user_id, portfolio_value) VALUES " +
-                " (?, ?)";
+        // Step 2. Check whether the user exists in the database
+        String SQL1 = "SELECT " +
+                "FROM accounts WHERE user_id=?";
 
-        try (PreparedStatement statement = this.connection.prepareStatement(SQL)) {
+        try (PreparedStatement statement = this.connection.prepareStatement(SQL1);) {
             statement.setInt(1, Integer.parseInt(userId));
-            statement.setDouble(2, portfolio_value);
-            statement.executeUpdate();
+            ResultSet rs = statement.executeQuery();
+            if (rs.next() == false) {
+                return false;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return "Portfolio history saved";
+        String SQL2 = "INSERT INTO portfolio_history" +
+                "  (user_id, portfolio_value) VALUES " +
+                " (?, ?)";
+
+        try (PreparedStatement statement = this.connection.prepareStatement(SQL2)) {
+            statement.setInt(1, Integer.parseInt(userId));
+            statement.setDouble(2, portfolio_value);
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     public String getPortfolioHistoryById(String userId) {
 

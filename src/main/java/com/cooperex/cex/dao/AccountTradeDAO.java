@@ -26,7 +26,7 @@ public class AccountTradeDAO {
         this.connection = connection;
     }
 
-    public String tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
+    public boolean tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
         System.out.println("User requests asset " + accountTrade.getTradeType());
         String assetCategory = accountTrade.getAssetCategory();
         String assetSymbol = accountTrade.getAssetSymbol();
@@ -63,7 +63,7 @@ public class AccountTradeDAO {
             System.out.println("The total value of the trade is "+ assetTotalValue);
 
             if (remainingCash < assetTotalValue) {
-                return "Failed to buy. User remaining cash is NOT enough";
+                return false;
             }
         }
 
@@ -82,10 +82,11 @@ public class AccountTradeDAO {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                return false;
             }
 
             if (assetCount > currentAssetCount) {
-                return "Failed to sell. User does not have enough assets to sell";
+                return false;
             }
         }
 
@@ -176,8 +177,9 @@ public class AccountTradeDAO {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return "User request asset trading";
+        return true;
     }
 }
 

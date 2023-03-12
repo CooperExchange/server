@@ -24,12 +24,12 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> returnUserId(@RequestBody Login login) {
-        String userId = loginDAO.returnUserId(login);
-        if (userId == null) {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> getUserId(@RequestBody Login login) {
+        String userId = loginDAO.getUserIdByEmailAndPassword(login);
+        if (userId != null) {
+            return ResponseEntity.ok(userId);
         }
-        return ResponseEntity.ok(userId);
+        return new ResponseEntity(HttpStatus.NOT_FOUND);
     }
 }
 
