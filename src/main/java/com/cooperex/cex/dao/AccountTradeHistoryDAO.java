@@ -1,7 +1,7 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
 import com.cooperex.cex.dao.AccountPortfolioDAO;
-import com.cooperex.cex.model.AccountTrade;
+import com.cooperex.cex.model.Trade;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.*;
@@ -29,21 +29,21 @@ public class AccountTradeHistoryDAO {
                 "FROM trades WHERE user_id=?";
 
         JSONObject tradeJson = new JSONObject();
+
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setInt(1, Integer.parseInt(userId));
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {;
-                AccountTrade accountTrade = new AccountTrade();
-                accountTrade.setTradeType(rs.getString("trade_type"));
-                accountTrade.setAssetSymbol(rs.getString("asset_symbol"));
-                accountTrade.setAssetName(rs.getString("asset_name"));
-                accountTrade.setAssetCategory(rs.getString("asset_category"));
-                accountTrade.setAssetCount(rs.getDouble("asset_count"));
-                accountTrade.setAssetPrice(rs.getDouble("asset_price"));
-                accountTrade.setTotalPrice(rs.getDouble("total_price"));
+                Trade trade = new Trade();
+                trade.setTradeType(rs.getString("trade_type"));
+                trade.setAssetSymbol(rs.getString("asset_symbol"));
+                trade.setAssetName(rs.getString("asset_name"));
+                trade.setAssetCategory(rs.getString("asset_category"));
+                trade.setAssetCount(rs.getDouble("asset_count"));
+                trade.setAssetPrice(rs.getDouble("asset_price"));
+                trade.setTotalPrice(rs.getDouble("total_price"));
                 String tradeDate = rs.getString("trade_date");
-                Gson gson = new Gson();
-                String json = gson.toJson(accountTrade);
+                String json = trade.toJson();
                 JSONObject jsonObject = new JSONObject(json);
                 tradeJson.put(tradeDate, jsonObject);
             }

@@ -1,8 +1,9 @@
 package com.cooperex.cex.model;
-
+import org.json.JSONObject;
+import com.google.gson.Gson;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class AccountTrade {
+public class Trade {
     private String tradeType;
     private String assetCategory;
     private String assetSymbol;
@@ -11,15 +12,21 @@ public class AccountTrade {
     private Double totalPrice;
     private Double assetPrice;
 
-
-    public AccountTrade() {}
     @JsonCreator
-    public AccountTrade(String tradeType,  String assetCategory, String assetSymbol, String assetName, Double assetCount) {
+    public Trade(String tradeType,  String assetCategory, String assetSymbol, String assetName, Double assetCount) {
         this.tradeType = tradeType;
         this.assetCategory = assetCategory;
         this.assetSymbol = assetSymbol;
         this.assetName = assetName;
         this.assetCount = assetCount;
+    }
+
+    public Trade() {}
+
+    public String toJson() {
+        Gson gson = new Gson();
+        String json = gson.toJson(this);
+        return json;
     }
 
     public String getTradeType() {

@@ -21,7 +21,7 @@ public class AccountBalanceController {
             return ResponseEntity.ok("Deposit has been increased by $" + String.valueOf(amount));
         }
         return ResponseEntity.badRequest()
-                .body("You can't withdraw a zero or negative amount");
+                .body("Check whether you are withdrawing a zero or negative amount");
     }
 
     @PostMapping(path="/{userId}/withdrawal")

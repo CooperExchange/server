@@ -1,7 +1,7 @@
 
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.model.AccountTrade;
+import com.cooperex.cex.model.Trade;
 import com.cooperex.cex.api.AlphaVantage;
 
 import java.sql.Connection;
@@ -26,13 +26,13 @@ public class AccountTradeDAO {
         this.connection = connection;
     }
 
-    public boolean tradeAssetBySymbol(String userId, AccountTrade accountTrade) {
-        System.out.println("User requests asset " + accountTrade.getTradeType());
-        String assetCategory = accountTrade.getAssetCategory();
-        String assetSymbol = accountTrade.getAssetSymbol();
-        String assetName = accountTrade.getAssetName();
-        String tradeType = accountTrade.getTradeType();
-        double assetCount = accountTrade.getAssetCount();
+    public boolean tradeAssetBySymbol(String userId, Trade trade) {
+        System.out.println("User requests asset " + trade.getTradeType());
+        String assetCategory = trade.getAssetCategory();
+        String assetSymbol = trade.getAssetSymbol();
+        String assetName = trade.getAssetName();
+        String tradeType = trade.getTradeType();
+        double assetCount = trade.getAssetCount();
         double assetPrice = 0;
         double remainingCash = 0;
         double assetTotalValue = 0;

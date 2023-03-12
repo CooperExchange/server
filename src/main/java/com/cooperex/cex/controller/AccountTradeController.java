@@ -1,6 +1,6 @@
 package com.cooperex.cex.controller;
 import com.cooperex.cex.dao.AccountTradeDAO;
-import com.cooperex.cex.model.AccountTrade;
+import com.cooperex.cex.model.Trade;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ public class AccountTradeController {
     }
 
     @PostMapping(path="/{userId}/trade")
-    public  ResponseEntity<String> buyAsset(@PathVariable String userId, @RequestBody AccountTrade accountTrade)  {
+    public  ResponseEntity<String> buyAsset(@PathVariable String userId, @RequestBody Trade trade)  {
 
-        if (accountTradeDAO.tradeAssetBySymbol(userId, accountTrade)) {
+        if (accountTradeDAO.tradeAssetBySymbol(userId, trade)) {
             return ResponseEntity.ok("Trade successful");
         }
         return ResponseEntity.badRequest()
