@@ -1,7 +1,7 @@
 package com.cooperex.cex.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class AccountSetting {
+public class Account {
     private String email;
     private String firstName;
     private String lastName;
@@ -9,7 +9,7 @@ public class AccountSetting {
     private String password;
 
     @JsonCreator
-    public AccountSetting(String email,
+    public Account(String email,
                           String firstName,
                           String lastName,
                           String username,

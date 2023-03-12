@@ -1,6 +1,6 @@
 package com.cooperex.cex.controller;
 
-import com.cooperex.cex.model.AccountSetting;
+import com.cooperex.cex.model.Account;
 import com.cooperex.cex.dao.AccountSettingDAO;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ public class AccountSettingController {
     }
 
     @PostMapping(path="/{userId}/update")
-    public ResponseEntity<String> updateAccount(@PathVariable String userId, @RequestBody AccountSetting accountSetting) {
-        if (accountSettingDAO.updateAccountInfoById(userId, accountSetting)) {
+    public ResponseEntity<String> updateAccount(@PathVariable String userId, @RequestBody Account account) {
+        if (accountSettingDAO.updateAccountInfoById(userId, account)) {
             return ResponseEntity.ok("Account has been reset");
         }
         return ResponseEntity.badRequest()

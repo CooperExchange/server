@@ -1,5 +1,5 @@
 package com.cooperex.cex.dao;
-import com.cooperex.cex.model.AccountSetting;
+import com.cooperex.cex.model.Account;
 import com.cooperex.cex.DatabaseExecutor;
 
 import java.sql.Connection;
@@ -17,7 +17,7 @@ public class AccountSettingDAO {
     }
 
     // To-do: Implement error handling for username and email duplicates
-    public boolean updateAccountInfoById(String userId, AccountSetting accountSetting) {
+    public boolean updateAccountInfoById(String userId, Account account) {
 
         // Create an account
         String SQL = "UPDATE accounts set " +
@@ -26,11 +26,11 @@ public class AccountSettingDAO {
 
         int userIdInt = Integer.parseInt(userId);
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-            statement.setString(1, accountSetting.getEmail());
-            statement.setString(2, accountSetting.getFirstName());
-            statement.setString(3, accountSetting.getLastName());
-            statement.setString(4, accountSetting.getUsername());
-            statement.setString(5, accountSetting.getPassword());
+            statement.setString(1, account.getEmail());
+            statement.setString(2, account.getFirstName());
+            statement.setString(3, account.getLastName());
+            statement.setString(4, account.getUsername());
+            statement.setString(5, account.getPassword());
             statement.setInt(6, userIdInt);
             statement.executeUpdate();
             statement.close();
