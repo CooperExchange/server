@@ -44,13 +44,13 @@ public class AccountProfileDAO {
     public String getAccountProfileById(String userId) {
         String SQL = "SELECT email, username, pass_word, first_name, last_name, total_deposit, total_withdrawal, remaining_cash " +
                 "FROM accounts WHERE user_id=?";
+
         Account account = new Account();
         try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
             statement.setInt(1, Integer.valueOf(userId));
             ResultSet rs = statement.executeQuery();
 
-            Boolean isUserRegistered = rs.next();
-            if (isUserRegistered) {
+            if (rs.next()) {
                 account.setEmail(rs.getString("email"));
                 account.setFirstName(rs.getString("first_name"));
                 account.setLastName(rs.getString("last_name"));
@@ -67,27 +67,6 @@ public class AccountProfileDAO {
         }
         return account.toJson();
     }
-
-
-
-//    public String resetAccountById(String userId) {
-//        // Reset user information
-//        System.out.println("User requests account reset");
-//        String SQL = "update accounts set " +
-//                "total_deposit = ?, total_withdrawal = ? " +
-//                "where user_id = ?;";
-//        int userIdInt = Integer.parseInt(userId);
-//        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
-//            statement.setDouble(1, 0);
-//            statement.setDouble(2, 0);
-//            statement.setInt(3, userIdInt);
-//            statement.executeUpdate();
-//            statement.close();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return "called resetAccountById";
-//    }
 }
 
 

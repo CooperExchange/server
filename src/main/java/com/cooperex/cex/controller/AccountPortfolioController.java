@@ -15,6 +15,7 @@ public class AccountPortfolioController {
         accountPortfolioDAO= new AccountPortfolioDAO();
     }
 
+    @CrossOrigin
     @GetMapping(path="/{userId}/portfolio")
     public ResponseEntity<String> savePortfolioValueById(@PathVariable String userId) {
         String portfolio = accountPortfolioDAO.getPortfolioById(userId);
@@ -22,6 +23,7 @@ public class AccountPortfolioController {
         return ResponseEntity.ok(portfolio);
     }
 
+    @CrossOrigin
     @GetMapping(path="/{userId}/portfolio-value")
     public ResponseEntity<Double> getPortfolioValue(@PathVariable String userId) {
         Double portfolioValue = accountPortfolioDAO.getPortfolioValueById(userId);

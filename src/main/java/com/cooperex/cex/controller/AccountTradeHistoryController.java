@@ -14,6 +14,7 @@ public class AccountTradeHistoryController {
         accountTradeHistoryDAO = new AccountTradeHistoryDAO();
     }
 
+    @CrossOrigin
     @GetMapping(path = "/{userId}/trade-history")
     public ResponseEntity<String> getTradeHistory(@PathVariable String userId) {
         String tradeHistory = accountTradeHistoryDAO.getTradeHistoryById(userId);

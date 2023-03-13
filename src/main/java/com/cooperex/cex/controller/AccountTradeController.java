@@ -15,6 +15,7 @@ public class AccountTradeController {
         accountTradeDAO = new AccountTradeDAO();
     }
 
+    @CrossOrigin
     @PostMapping(path="/{userId}/trade")
     public  ResponseEntity<String> buyAsset(@PathVariable String userId, @RequestBody Trade trade)  {
 

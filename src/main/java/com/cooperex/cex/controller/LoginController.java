@@ -2,10 +2,7 @@
 package com.cooperex.cex.controller;
 import com.cooperex.cex.dao.LoginDAO;
 import com.cooperex.cex.model.Login;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
@@ -18,6 +15,7 @@ public class LoginController {
         loginDAO = new LoginDAO();
     }
 
+    @CrossOrigin
     @GetMapping("/")
     public String welcomeAPIUser() {
         return "Hello World! The Cooper Union Backend Server is running!";

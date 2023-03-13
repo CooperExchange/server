@@ -14,6 +14,7 @@ public class AccountPortfolioHistoryController {
         accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
     }
 
+    @CrossOrigin
     @PostMapping(path="/{userId}/portfolio-history")
     public ResponseEntity<String> savePortfolioValue(@PathVariable String userId){
         if (accountPortfolioHistoryDAO.savePortfolioValueById(userId)) {
@@ -23,6 +24,8 @@ public class AccountPortfolioHistoryController {
                 .badRequest()
                 .body("User does not exist.");
     }
+
+    @CrossOrigin
     @GetMapping(path="/{userId}/portfolio-history")
     public ResponseEntity<String> getPortfolio(@PathVariable String userId){
         String portfolioHistory = accountPortfolioHistoryDAO.getPortfolioHistoryById(userId);

@@ -1,9 +1,7 @@
 package com.cooperex.cex.controller;
 import com.cooperex.cex.model.Register;
 import com.cooperex.cex.dao.RegisterDAO;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 @RestController
@@ -15,6 +13,7 @@ public class RegisterController {
         registerDAO = new RegisterDAO();
     }
 
+    @CrossOrigin
     @PostMapping("/registration")
     public ResponseEntity<String> createAccount(@RequestBody Register account) {
         if (registerDAO.createAccount(account)) {
@@ -24,6 +23,7 @@ public class RegisterController {
                 .body("The username or email has been taken.");
     }
 
+    @CrossOrigin
     @PostMapping("/registration-random")
     public ResponseEntity<String> createRandomAccount() {
         if (registerDAO.createRandomAccount()) {

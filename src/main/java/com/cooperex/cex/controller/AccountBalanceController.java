@@ -14,6 +14,7 @@ public class AccountBalanceController {
         accountBalanceDAO = new AccountBalanceDAO();
     }
 
+    @CrossOrigin
     @PostMapping(path="/{userId}/deposit")
     public ResponseEntity<String> addBalance(@PathVariable String userId, @RequestBody Double amount) {
 
@@ -24,6 +25,7 @@ public class AccountBalanceController {
                 .body("Check whether you are withdrawing a zero or negative amount");
     }
 
+    @CrossOrigin
     @PostMapping(path="/{userId}/withdrawal")
     public ResponseEntity<String> withdrawBalance(@PathVariable String userId, @RequestBody Double amount){
         if (accountBalanceDAO.withdrawBalanceById(userId, amount)) {

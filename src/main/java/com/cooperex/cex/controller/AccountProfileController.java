@@ -16,6 +16,7 @@ public class AccountProfileController {
         this.accountProfileDAO = new AccountProfileDAO();;
     }
 
+    @CrossOrigin
     @PostMapping(path="/{userId}/profile-update")
     public ResponseEntity<String> updateAccount(@PathVariable String userId, @RequestBody Account account) {
         if (accountProfileDAO.updateAccountInfoById(userId, account)) {
@@ -25,6 +26,7 @@ public class AccountProfileController {
                 .body("Username or email already exists");
     }
 
+    @CrossOrigin
     @GetMapping(path="/{userId}/profile")
     public ResponseEntity<String> getAccountProfile(@PathVariable String userId) {
         String account = accountProfileDAO.getAccountProfileById(userId);
@@ -33,13 +35,5 @@ public class AccountProfileController {
         }
 
         return ResponseEntity.ok(account);
-    }
-
-
-
-//    @DeleteMapping(path="/{userId}/rest")
-//    public String resetAccount(@PathVariable String userId) {
-//        return accountSettingDAO.resetAccountById(userId);
-//    }
-
+    } 
 }
