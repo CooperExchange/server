@@ -82,7 +82,3 @@ public class AccountPortfolioHistoryDAO {
         return json;
     }
 }
-
-
-
-// Bug 1: Must check whether the user exists in the first place

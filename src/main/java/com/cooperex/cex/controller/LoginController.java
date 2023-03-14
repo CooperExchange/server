@@ -21,6 +21,7 @@ public class LoginController {
         return "Hello World! The Cooper Union Backend Server is running!";
     }
 
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<String> getUserId(@RequestBody Login login) {
         String userId = loginDAO.getUserIdByEmailAndPassword(login);
