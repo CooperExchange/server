@@ -13,7 +13,7 @@ public class AssetPriceController {
         System.out.println("AssetPriceDAO Controller object has been initialized!");
         assetPriceDAO = new AssetPriceDAO();
     }
-
+    
     @CrossOrigin
     @GetMapping("/asset-price")
     public ResponseEntity<String> getAssetPrice() {
