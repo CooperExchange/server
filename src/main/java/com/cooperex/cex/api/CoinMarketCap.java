@@ -8,7 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
-import com.google.gson.Gson;
+import com.cooperex.cex.model.Asset;
 
 
 public class CoinMarketCap {
@@ -16,7 +16,7 @@ public class CoinMarketCap {
         System.out.println("CMC initailized");
     }
 
-    public Map<String, Double> getCryptoPriceDict(String[] symbols) {
+    public ArrayList<Asset> getCryptoPriceDict(String[] symbols) {
 
         // Step 1. Retrive crypto asset counts from user's portfolio
         String searchQuery = "";
@@ -30,10 +30,9 @@ public class CoinMarketCap {
 
         String APIKey = "06e9d858-d7c0-479d-93fc-672bc5937895";
         String uri = "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest?symbol=" + searchQuery;
+        ArrayList<Asset> assetArrayList = new ArrayList<Asset>();
 
         // Step 3. Price crypto prices Query CMC symbols
-        Map<String, Double> cryptoPriceDict = new HashMap();
-
         try {
             System.out.print("CMC API called");
             HttpResponse<String> response = Unirest.get(uri)
@@ -42,14 +41,23 @@ public class CoinMarketCap {
             JSONObject obj = new JSONObject(response.getBody());
 
             for (int i = 0; i < symbols.length; i++) {
+                Asset asset = new Asset();
                 JSONArray jsonArray = obj.getJSONObject("data").getJSONArray(symbols[i]);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
-                String symbol = jsonObject.getString("symbol");
-                double cryptoPrice = jsonObject.getJSONObject("quote").getJSONObject("USD").getDouble("price");
-                cryptoPriceDict.put(symbol, cryptoPrice);
 
+                String symbol = jsonObject.getString("symbol");
+                String name = jsonObject.getString("name");
+                double price = jsonObject.getJSONObject("quote").getJSONObject("USD").getDouble("price");
+                double marketCap = jsonObject.getJSONObject("quote").getJSONObject("USD").getDouble("market_cap");
+
+                asset.setAssetCategory("crypto");
+                asset.setAssetSymbol(symbol);
+                asset.setAssetName(name);
+                asset.setAssetMarketCap(marketCap);
+                asset.setAssetPrice(price);
+                assetArrayList.add(asset);
             }
-            return cryptoPriceDict;
+            return assetArrayList;
         } catch (UnirestException e) {
             return null;
         }

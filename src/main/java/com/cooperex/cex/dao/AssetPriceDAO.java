@@ -5,8 +5,8 @@ import java.sql.*;
 import java.util.*;
 import org.json.JSONObject;;
 import com.google.gson.Gson;
-import com.cooperex.cex.api.CoinMarketCapTest;
-import com.cooperex.cex.api.YahooFinanceTest;
+import com.cooperex.cex.api.CoinMarketCap;
+import com.cooperex.cex.api.YahooFinance;
 import com.cooperex.cex.model.Asset;
 
 public class AssetPriceDAO {
@@ -27,10 +27,10 @@ public class AssetPriceDAO {
         String stockSymbols[] = {"TSLA", "AMZN", "AAPL", "MSFT", "NFLX", "HOOD"};
 
         // Step 3. Get crypto prices from CoinMarketCap
-        CoinMarketCapTest coinMarketCapTest = new CoinMarketCapTest();
-        YahooFinanceTest yahooFinanceTest = new YahooFinanceTest();
-        ArrayList<Asset> cryptoAssetArrayList = coinMarketCapTest.getCryptoPriceDict(cryptoSymbols);
-        ArrayList<Asset> stockAssetArrayList = yahooFinanceTest.getStockPriceDict(stockSymbols);
+        CoinMarketCap coinMarketCap = new CoinMarketCap();
+        YahooFinance yahooFinance = new YahooFinance();
+        ArrayList<Asset> cryptoAssetArrayList = coinMarketCap.getCryptoPriceDict(cryptoSymbols);
+        ArrayList<Asset> stockAssetArrayList = yahooFinance.getStockPriceDict(stockSymbols);
 
         // Delete the rows and re-insert
         String SQL_1 = "DELETE FROM assets";

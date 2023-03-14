@@ -17,12 +17,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
-//		AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
-//		String res = accountPortfolioDAO.getPortfolioById("1");
-//		double res_1 = accountPortfolioDAO.getPortfolioValueById("1");
-//
-//		System.out.println(res);
-//		System.out.println(res_1);
+		AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
+		System.out.println(accountPortfolioDAO.getPortfolioById("1"));
+		System.out.println(accountPortfolioDAO.getPortfolioValueById("1"));
 	}
 
 	@Scheduled(fixedRate = 15000)

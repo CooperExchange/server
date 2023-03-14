@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.Gson;
+import com.cooperex.cex.model.Asset;
 
 public class YahooFinance {
 
@@ -16,7 +17,7 @@ public class YahooFinance {
         System.out.println("YahooFinance API initailized");
     }
 
-    public Map<String, Double> getStockPriceDict(String[] symbols) {
+    public ArrayList<Asset> getStockPriceDict(String[] symbols) {
 
         String searchQuery = "";
         Map<String, Double> stockPriceDict = new HashMap();
@@ -26,6 +27,7 @@ public class YahooFinance {
             searchQuery += (symbol + ",");
         }
 
+        ArrayList<Asset> assetArrayList = new ArrayList<Asset>();
         String uri = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/qu/quote/" + searchQuery;
 
         try {
@@ -38,12 +40,23 @@ public class YahooFinance {
             JSONArray array = new JSONArray(response.getBody());
 
             for (int i = 0; i < symbols.length; i++) {
-                double stockPrice = array.getJSONObject(i).getDouble("regularMarketPrice");
+                Asset asset = new Asset();
+
+                double price = array.getJSONObject(i).getDouble("regularMarketPrice");
+                double marketCap = array.getJSONObject(i).getDouble("marketCap");
                 String symbol = array.getJSONObject(i).getString("symbol");
-                stockPriceDict.put(symbol, stockPrice);
+                String name = array.getJSONObject(i).getString("shortName");
+
+                asset.setAssetCategory("stock");
+                asset.setAssetSymbol(symbol);
+                asset.setAssetName(name);
+                asset.setAssetMarketCap(marketCap);
+                asset.setAssetPrice(price);
+
+                assetArrayList.add(asset);
             }
 
-            return stockPriceDict;
+            return assetArrayList;
         } catch (UnirestException e) {
             return null;
         }
