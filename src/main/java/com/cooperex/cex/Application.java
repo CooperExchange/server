@@ -5,7 +5,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.cooperex.cex.api.CoinMarketCap;
 import com.cooperex.cex.api.YahooFinance;
+
 import com.cooperex.cex.dao.AssetPriceDAO;
+import com.cooperex.cex.dao.AccountTradeDAO;
+
 import org.springframework.scheduling.annotation.Scheduled;
 
 @SpringBootApplication

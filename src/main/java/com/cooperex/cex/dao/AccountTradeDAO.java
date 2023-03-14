@@ -2,7 +2,6 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
 import com.cooperex.cex.model.Trade;
-import com.cooperex.cex.api.AlphaVantage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,23 +26,36 @@ public class AccountTradeDAO {
     }
 
     public boolean tradeAssetBySymbol(String userId, Trade trade) {
-        System.out.println("User requests asset " + trade.getTradeType());
-        String assetCategory = trade.getAssetCategory();
+
+        // Step 0. get information about the asset from our database
         String assetSymbol = trade.getAssetSymbol();
-        String assetName = trade.getAssetName();
         String tradeType = trade.getTradeType();
         double assetCount = trade.getAssetCount();
+
+        // Initialize
         double assetPrice = 0;
-        double remainingCash = 0;
+        String assetCategory = null;
+        String assetName = null;
         double assetTotalValue = 0;
-        String query = "";
+        double remainingCash = 0;
 
-        // Step 1. Get price based on asset type
-        AlphaVantage alphaVantage = new AlphaVantage();
-        query = alphaVantage.getQueryByAssetCategory(assetCategory, assetSymbol);
-        assetPrice = alphaVantage.getAssetPrice(query, assetCategory);
+        // Step 1. Query the asset symbol
+        String GET_ASSET_INFO = "SELECT asset_name, asset_category, asset_price " +
+                "FROM assets WHERE asset_symbol=?";
+
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_ASSET_INFO);) {
+            statement.setString(1, assetSymbol);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                assetPrice = rs.getDouble("asset_price");
+                assetCategory = rs.getString("asset_category");
+                assetName = rs.getString("asset_name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         assetTotalValue = assetPrice * assetCount;
-
         // Step 2. Determine whether user can buy or sell
         // For "buy", check whether user has enough remaining balance
         if (tradeType.equals("buy")) {

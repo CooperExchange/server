@@ -100,8 +100,7 @@ public class AssetPriceDAO {
         }
 
         String json = new Gson().toJson(assetArrayList);
-        System.out.println(json);
-        return "Hello world";
+        return json;
     }
 
 }

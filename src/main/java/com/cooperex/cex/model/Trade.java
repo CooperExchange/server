@@ -5,19 +5,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class Trade {
     private String tradeType;
-    private String assetCategory;
     private String assetSymbol;
-    private String assetName;
     private Double assetCount;
+    private String assetCategory;
+    private String assetName;
     private Double totalPrice;
     private Double assetPrice;
 
     @JsonCreator
-    public Trade(String tradeType,  String assetCategory, String assetSymbol, String assetName, Double assetCount) {
+    public Trade(String tradeType, String assetSymbol, Double assetCount) {
         this.tradeType = tradeType;
-        this.assetCategory = assetCategory;
         this.assetSymbol = assetSymbol;
-        this.assetName = assetName;
         this.assetCount = assetCount;
     }
 
