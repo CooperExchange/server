@@ -3,15 +3,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.cooperex.cex.api.CoinMarketCap;
-import com.cooperex.cex.api.YahooFinance;
-
 import com.cooperex.cex.dao.AssetPriceDAO;
-import com.cooperex.cex.dao.AccountTradeDAO;
 import com.cooperex.cex.dao.AccountPortfolioDAO;
+import com.cooperex.cex.scheduler.PortfolioHistoryScheduler;
 
 import org.springframework.scheduling.annotation.Scheduled;
-
 @SpringBootApplication
 @EnableScheduling
 public class Application {
@@ -26,6 +22,10 @@ public class Application {
 	public void reportCurrentTime() {
 		AssetPriceDAO assetPriceDAO = new AssetPriceDAO();
 		assetPriceDAO.updateDatabaseAssetPrice();
+
+		// To-do: save for all users registered
+		PortfolioHistoryScheduler portfolioHistoryScheduler = new PortfolioHistoryScheduler();
+		portfolioHistoryScheduler.savePortfolioValue();
 	}
 }
 

@@ -1,14 +1,12 @@
 package com.cooperex.cex.dao;
 import com.cooperex.cex.DatabaseExecutor;
-import com.cooperex.cex.dao.AccountPortfolioDAO;
+
 import java.sql.Connection;
-import java.sql.*;
 import java.util.*;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-import org.json.JSONObject;
+
 import com.google.gson.Gson;
 public class AccountPortfolioHistoryDAO {
     private Connection connection;
