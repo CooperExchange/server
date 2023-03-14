@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.cooperex.cex.dao.AssetPriceDAO;
 import com.cooperex.cex.dao.AccountPortfolioDAO;
 import com.cooperex.cex.scheduler.PortfolioHistoryScheduler;
+import com.cooperex.cex.scheduler.AssetPriceScheduler;
 
 import org.springframework.scheduling.annotation.Scheduled;
 @SpringBootApplication
@@ -14,18 +15,20 @@ public class Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 		AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
-		System.out.println(accountPortfolioDAO.getPortfolioById("1"));
-		System.out.println(accountPortfolioDAO.getPortfolioValueById("1"));
 	}
 
-	@Scheduled(fixedRate = 15000)
-	public void reportCurrentTime() {
-		AssetPriceDAO assetPriceDAO = new AssetPriceDAO();
-		assetPriceDAO.updateDatabaseAssetPrice();
+	@Scheduled(fixedRate = 300000, initialDelay = 1000)
+	public void updateDatabaseAssetPrice() {
+		AssetPriceScheduler assetPriceScheduler = new AssetPriceScheduler();
+		assetPriceScheduler.updateDatabaseAssetPrice();
+	}
 
-		// To-do: save for all users registered
+	// 6 hours = 21600 seconds
+	@Scheduled(fixedRate = 21600000)
+	public void saveUserPortfolioValue() {
 		PortfolioHistoryScheduler portfolioHistoryScheduler = new PortfolioHistoryScheduler();
 		portfolioHistoryScheduler.savePortfolioValue();
 	}
+
 }
 

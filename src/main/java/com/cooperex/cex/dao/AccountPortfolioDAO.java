@@ -97,7 +97,6 @@ public class AccountPortfolioDAO {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
             double assetTotalValue = jsonObject.getDouble("assetTotalValue");
             portfolio_total_value += assetTotalValue;
-
         }
 
         return portfolio_total_value;

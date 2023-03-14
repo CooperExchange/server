@@ -22,7 +22,7 @@ public class PortfolioHistoryScheduler {
         this.connection = connection;
     }
 
-    public String savePortfolioValue() {
+    public Boolean savePortfolioValue() {
         AccountPortfolioHistoryDAO accountPortfolioHistoryDAO = new AccountPortfolioHistoryDAO();
         AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
 
@@ -47,15 +47,7 @@ public class PortfolioHistoryScheduler {
             accountPortfolioHistoryDAO.savePortfolioValueById(userId);
         }
 
-        // For each user_id, get the portfolio value and save
-
-
-        // For each user_id in the array, determine get the portfolio value
-        // Save the portfolio value to the current portfolio_history table
-
-
-        // For each user, apply accountPortfolioHistoryDAO.savePortfolioValueById("1");
         System.out.println("Portfolio values for all users have been saved.");
-        return "Hello world";
+        return true;
     }
 }

@@ -74,9 +74,6 @@ public class AccountPortfolioHistoryDAO {
 
         Gson gson = new Gson();
         String json = gson.toJson(portfolioHistoryDict);
-        System.out.println(json);
-
-        // Step 2. Return as a JSON file.
         return json;
     }
 }
