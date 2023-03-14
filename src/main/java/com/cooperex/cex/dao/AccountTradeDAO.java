@@ -43,6 +43,8 @@ public class AccountTradeDAO {
         String GET_ASSET_INFO = "SELECT asset_name, asset_category, asset_price " +
                 "FROM assets WHERE asset_symbol=?";
 
+
+
         try (PreparedStatement statement = this.connection.prepareStatement(GET_ASSET_INFO);) {
             statement.setString(1, assetSymbol);
             ResultSet rs = statement.executeQuery();

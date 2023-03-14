@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.apache.commons.lang3.StringUtils;
-import com.google.gson.Gson;
 import com.cooperex.cex.model.Asset;
 
 

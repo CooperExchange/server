@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.*;
 import java.util.*;
 import org.json.JSONObject;
+import org.json.JSONArray;
 import com.google.gson.Gson;
-import com.cooperex.cex.api.CoinMarketCap;
-import com.cooperex.cex.api.YahooFinance;
+import com.cooperex.cex.model.Portfolio;
 
 public class AccountPortfolioDAO {
     private Connection connection;
@@ -19,75 +19,59 @@ public class AccountPortfolioDAO {
     }
 
     public String getPortfolioById(String userId) {
+
+        // Modification - no need to use CMC and Yahoo Finance
         // Step 1. Retrieve assets held by the user
-        String SQL = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
+        String GET_PORTFOLIO = "SELECT asset_name, asset_symbol, asset_category, asset_count  " +
                 "FROM portfolios WHERE user_id=?";
 
-        Map<String, Map<String, String>> crpytoDict = new HashMap<>();
-        Map<String, Map<String, String>> stockDict = new HashMap<>();
-        String cryptoSymbols[] = {};
-        String stockSymbols[] = {};
-        ArrayList<String> cryptoSymbolList = new ArrayList<String>(Arrays.asList(cryptoSymbols));
-        ArrayList<String> stockSymbolList = new ArrayList<String>(Arrays.asList(stockSymbols));
+        // Step 1. Query the asset symbol
+        String GET_ASSET_INFO = "SELECT asset_name, asset_category, asset_price " +
+                "FROM assets WHERE asset_symbol=?";
 
-        try (PreparedStatement statement = this.connection.prepareStatement(SQL);) {
+        // Step 2. Query the asset count and the symbol from the portfolio
+
+        ArrayList<Portfolio> portfolioArrayList = new ArrayList<Portfolio>();
+
+
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_PORTFOLIO);) {
             statement.setInt(1, Integer.parseInt(userId));
             ResultSet rs = statement.executeQuery();
             int count = 1;
             while (rs.next()) {
-                Map<String, String> assetDict = new HashMap<>();
-                String assetSymbol = rs.getString("asset_symbol");
-                String assetCategory = rs.getString("asset_category");
-                assetDict.put("assetName", rs.getString("asset_name"));
-                assetDict.put("assetCategory", rs.getString("asset_category"));
-                assetDict.put("assetCount", String.valueOf(rs.getDouble("asset_count")));
-
-                // Step 2. Filter cryptos only
-                if (assetCategory.equals("crypto")) {
-                    cryptoSymbolList.add(assetSymbol);
-                    crpytoDict.put(assetSymbol, assetDict);
-                    count += 1;
-                }
-
-                if (assetCategory.equals("stock")) {
-                    stockSymbolList.add(assetSymbol);
-                    stockDict.put(assetSymbol, assetDict);
-                    count += 1;
-                }
+                Portfolio portfolio = new Portfolio();
+                portfolio.setAssetSymbol(rs.getString("asset_symbol"));
+                portfolio.setAssetCount(rs.getDouble("asset_count"));
+                portfolioArrayList.add(portfolio);
             }
         } catch (SQLException e) {
             e.printStackTrace();
             return "Unexpected error has occured.";
         }
 
-        cryptoSymbols = cryptoSymbolList.toArray(cryptoSymbols);
-        stockSymbols = stockSymbolList.toArray(stockSymbols);
-
-        // Step 3. Get crypto prices from CoinMarketCap
-        if (cryptoSymbols.length != 0) {
-            CoinMarketCap coinMarketCap = new CoinMarketCap();
-            Map<String, Double> cryptoPriceDict = coinMarketCap.getCryptoPriceDict(cryptoSymbols);
-            crpytoDict.forEach((k, v) -> crpytoDict
-                    .get(k).put("assetPrice", String.valueOf(cryptoPriceDict.get(k))));
+        for (int i = 0; i < portfolioArrayList.size(); i++) {
+            Portfolio portoflio = portfolioArrayList.get(i);
+            try (PreparedStatement statement = this.connection.prepareStatement(GET_ASSET_INFO);) {
+                statement.setString(1, portoflio.getAssetSymbol());
+                ResultSet rs = statement.executeQuery();
+                while (rs.next()) {
+                    portoflio.setAssetPrice(rs.getDouble("asset_price"));
+                    portoflio.setAssetCategory(rs.getString("asset_category"));
+                    portoflio.setAssetName(rs.getString("asset_name"));
+                    double assetTotalValue = portoflio.getAssetCount() * rs.getDouble("asset_price");
+                    portoflio.setAssetTotalValue(assetTotalValue);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
-        // Step 4. Get stock prices from Yahoo Finance
-        if (stockSymbols.length != 0) {
-            YahooFinance yahooFinance = new YahooFinance();
-            Map<String, Double> stockPriceDict = yahooFinance.getStockPriceDict(stockSymbols);
-            stockDict.forEach((k, v) -> stockDict
-                    .get(k).put("assetPrice", String.valueOf(stockPriceDict.get(k))));
-        }
-
-        // Step 5. Combine the crypto and stock dictionaries
-        Map<String, Map<String, String>> assetDict = new HashMap<>();
-        assetDict.putAll(stockDict);
-        assetDict.putAll(crpytoDict);
+        // Step 3. Turn into an array of JSON
         Gson gson = new Gson();
-        String assetJson = gson.toJson(assetDict);
-        return assetJson;
+        String json = gson.toJson(portfolioArrayList);
+        System.out.println(json);
+        return json;
     }
-
 
     public double getPortfolioValueById(String userId) {
         // Step 1. Determine the remaining cash
@@ -106,20 +90,16 @@ public class AccountPortfolioDAO {
         }
 
         // Step 2. Determine the valuation of the stocks/cryptos
-        AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
-        String json = accountPortfolioDAO.getPortfolioById(userId);
-        JSONObject jsonObject = new JSONObject(json);
-        Iterator<String> keys = jsonObject.keys();
+//        AccountPortfolioDAO accountPortfolioDAO = new AccountPortfolioDAO();
+        String json = getPortfolioById(userId);
+        JSONArray jsonArray = new JSONArray(json);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            double assetTotalValue = jsonObject.getDouble("assetTotalValue");
+            portfolio_total_value += assetTotalValue;
 
-        while(keys.hasNext()) {
-            String key = keys.next();
-            if (jsonObject.get(key) instanceof JSONObject) {
-                // do something with jsonObject here
-                double assetPrice = Double.valueOf(jsonObject.getJSONObject(key).getString("assetPrice"));
-                double assetCount = Double.valueOf(jsonObject.getJSONObject(key).getString("assetCount"));
-                portfolio_total_value += (assetPrice * assetCount);
-            }
         }
+
         return portfolio_total_value;
     }
 }
